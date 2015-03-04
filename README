@@ -13,3 +13,8 @@ $ ./lg.srv -fg
 
 now connect to port 6260 with your webbrowser
 
+------------------
+creating www.c from www-pages
+* download tool mltar from 'Files' section of this project
+* now you can run
+$ mltar -z -o www.c www-pages
