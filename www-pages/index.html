@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+	<head>
+		<title>${JSON:NICKNAME}'s Control Center</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+		<script type="text/javascript" src="javascript/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="javascript/functions.js"></script>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+				<div id="title">
+					<a href="index.html">
+						<span>${JSON:NICKNAME}'s</span><br />
+						Control Center
+					</a>
+				</div>
+				<div id="datetime"></div>
+				<div id="navigation">
+					<ul>
+						<li><a class="active" href="index.html">Home</a></li>
+						<li><a class="link" href="sites/schedule.html">Schedule</a></li>
+						<li><a class="link" href="sites/information.html">Information</a></li>
+						<li><a class="link" href="sites/statistic.html">Statistic</a></li>
+						<li><a class="link" href="sites/maps.html">Maps</a></li>
+						<li><a class="link" href="sites/service.html">Service</a></li>
+					</ul>
+				</div>
+			</div>
+			<div id="content">
+				<h2>Status</h2>
+				<div id="loadhere"></div>
+				<br /><br />
+				<h2>Control</h2>
+				<table cellpadding="0" cellspacing="0" class="control" border="0">
+					<tr>
+						<td><input type="button" id="start" value="START CLEANING" /></td>
+						<td><input type="button" id="pause" value="PAUSE" /></td>
+						<td><input type="button" id="homing" value="GO HOME" /></td>
+					</tr>
+					<tr>
+						<td><input type="button" id="mode" value="Mode"/></td>
+						<td><input type="button" id="turbo" value="Turbo"/></td>
+						<td><input type="button" id="repeat" value="Repeat"/></td>
+					</tr>
+				</table>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,21 @@
+<html>
+ <body>
+<b>Robot-state</b>: <status>${JSON:ROBOT_STATE}</status> <br>
+<b>Batt-Perc</b>: <batterie>${JSON:BATTPERC}</batterie> <br>
+<b>Program Version</b>: <program>${LGSRV:VERSION}</program> <br>
+<b>Client Commands</b>: <client>${LGSRV:SUMCMD}</client> <br>
+<b>Cmd per second</b>: <cmd>${LGSRV:SUMCMDSEC}</cmd> <br>
+<b>Http requests</b>: <httprequests>${LGSRV:NUMHTTP}</httprequests> <br>
+<b>Cpu-Idle</b>: <cpuidle>${CPU:IDLE}</cpuidle> <br>
+<b>Cpu-User</b>: <cpuuser>${CPU:USER}</cpuuser> <br>
+<b>Cpu-Sys</b>: <cpusys>${CPU:SYS}</cpusys> <br>
+<b>Cpu-Nice</b>: <cpunice>${CPU:NICE}</cpunice> <br>
+<b>Turbo</b>: <turbo>${JSON:TURBO}</turbo> <br>
+<b>Repeat</b>: <repeat>${JSON:REPEAT}</repeat> <br>
+<b>Mode</b>: <mode>${JSON:MODE}</mode> <br>
+<b>Version</b>: <version>${JSON:VERSION}</version> <br>
+<b>Nickname</b>: <nickname>${JSON:NICKNAME}</nickname> <br>
+<b>Bumping</b>: <bumping>${CLREC:CURRENTBUMPING.count}</bumping> <br>
+<b>Last-Clean</b>: <lastclean>${CLREC:LAST_CLEAN.DateTime}</lastclean> <br>
+ </body>
+</html>

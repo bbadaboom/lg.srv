@@ -1,0 +1,58 @@
+
+Ausgaben:
+{\"CLEANING_TIME\":\"REQUEST\"} = Wie lange reinigt der Hom-Bot bereits
+{\"DIAGNOSIS\":{\"INNER_STATE\":\"REQUEST\"}} =
+{\"DIAGNOSIS\":{\"RECENT\":\"REQUEST\"}} =
+{\"DIAGNOSIS\":\"REQUEST\"} =
+
+
+Befehle:
+{\"COMMAND\":\"CLEAN_START\"} = Reinigung starten
+{\"NICKNAME\":{\"SET\":\"NAME_DES_HOMBOT\"}} = Dem Hom-Bot einen Namen geben (wahrscheinlich für die Spracherkennung)
+{\"COMMAND\":{\"REPEAT\":\"true\"}} = Wiederholte Reinigung ein (oder false für aus)
+{\"COMMAND\":{\"TURBO\":\"true\"}} = Turbo-Modus ein (oder false für aus)
+{\"COMMAND\":{\"VOICE\":\"MALE\"}} = männliche Sprachausgabe (oder FEMALE für weibliche Sprachausgabe)
+{\"COMMAND\":{\"CLEAN_MODE\":\"CLEAN_SPOT\"}} = Spot-Modus
+{\"COMMAND\":{\"CLEAN_MODE\":\"CLEAN_SB\"}} = Cell-by-Cell Modus
+{\"COMMAND\":{\"CLEAN_MODE\":\"CLEAN_ZZ\"}} = Zick-Zack Modus
+{\"JOY\":\""FORWARD"\"} = lässt den Robot vorfährts fahren
+{\"JOY\":\""FORWARD_LEFT"\"} = links vorfährts
+{\"JOY\":\""FORWARD_RIGHT"\"} = rechts vorfährts
+{\"JOY\":\""LEFT"\"} = links
+{\"JOY\":\""RIGHT"\"} = rechts
+{\"JOY\":\""BACKWARD"\"} = zurück
+{\"JOY\":\""BACKWARD_LEFT"\"} = links zurück
+{\"JOY\":\""BACKWARD_RIGHT"\"} = rechtszurück
+{\"JOY\":\""RELEASE"\"} = Steuerung beenden?
+{\"COMMAND\":\"HOMING\"} = In die Ladestation fahren
+{\"COMMAND\":\"PAUSE\"} = Reinigung pausieren
+{\"BLACKBOX\":\"REQUEST_ABSTRACT\"} = liefert verschiedene Informationen (Firmware-Version, Batterie-Stand, usw.) zurück, vermutlich auch die aktuelle Karte
+{\"DIAGNOSIS\":\"STOP\"} = Diagnose beenden
+
+Session:
+{\"CONNECT\":\"REQUEST\"} = JSON Session starten (auf Port 4002!)
+{\"SESSION\":\"ALIVE\"} = JSON Session aufrechthalten
+
+Start conn port 4000:
+{
+  "CONNECT_INIT":
+  [
+	{"ROBOT_STATE":"CHARGING"},
+	{"TURBO":"false"},
+	{"REPEAT":"false"},
+	{"BATT":"4"},
+	{"MODE":"ZZ"},
+	{"RESERVATION":
+		{"RESP_RSVSTATE":"false"}
+	},
+	{"NICKNAME":"HOMBOT"},
+	{"VERSION":"11128"},
+	{"BLACKBOX":
+		{"RECENT_ABS":"false"}
+	},
+	{"DIAGNOSIS":
+		{"RECENT":"false"}
+	},
+	{"VOICEMODE":"MALE"}
+  ]
+}

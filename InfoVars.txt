@@ -1,0 +1,40 @@
+
+Program Version  : ${LGSRV:VERSION}
+Client Commands  : ${LGSRV:SUMCMD}
+Cmd per second   : ${LGSRV:SUMCMDSEC}
+Http requests    : ${LGSRV:NUMHTTP}
+Dropbear Version : ${LGSRV:DROPBEARV}
+Cpu-Idle         : ${CPU:IDLE}
+Cpu-User         : ${CPU:USER}
+Cpu-Sys          : ${CPU:SYS}
+Cpu-Nice         : ${CPU:NICE}
+Robot-state      : ${JSON:ROBOT_STATE}
+Turbo            : ${JSON:TURBO}
+Repeat           : ${JSON:REPEAT}
+Batt             : ${JSON:BATT}
+Batt-Perc        : ${JSON:BATTPERC}
+Mode             : ${JSON:MODE}
+Version          : ${JSON:VERSION}
+Nickname         : ${JSON:NICKNAME}
+Monday           : ${TIMER:MONDAY}
+Tuesday          : ${TIMER:TUESDAY}
+Wednesday        : ${TIMER:WEDNESDAY}
+Thursday         : ${TIMER:THURSDAY}
+Friday           : ${TIMER:FRIDAY}
+Saturday         : ${TIMER:SATURDAY}
+Sunday           : ${TIMER:SUNDAY}
+
+13:05            : ${SYS:TIME-H:M}
+13:05:37         : ${SYS:TIME-H:M:S}
+01:05 PM         : ${SYS:TIME-H12:M}
+01:05:37 PM      : ${SYS:TIME-H12:M:S}
+05.11.2014       : ${SYS:DATE-D.M.Y}
+11.05.2014       : ${SYS:DATE-M.D.Y}
+2014.11.05       : ${SYS:DATE-Y.M.D}
+05/11/2014       : ${SYS:DATE-D/M/Y}
+11/05/2014       : ${SYS:DATE-M/D/Y}
+2014/11/05       : ${SYS:DATE-Y/M/D}
+
+special page calls :
+
+http://<ip>:6260/sites/schedule?MONDAY=09:00&TUESDAY=08:00...

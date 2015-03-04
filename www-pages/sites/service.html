@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+	<head>
+		<title>${JSON:NICKNAME}'s Control Center</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="../favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		<link rel="stylesheet" href="../javascript/css/jquery-ui.css" />
+		<script type="text/javascript" src="../javascript/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="../javascript/jquery-ui-1.10.4.min.js"></script>
+		<script type="text/javascript" src="../javascript/functions.js"></script>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+				<div id="title">
+					<a href="../index.html">
+						<span>${JSON:NICKNAME}'s</span><br />
+						Control Center
+					</a>
+				</div>
+				<div id="datetime"></div>
+				<div id="navigation">
+					<ul>
+						<li><a class="link" href="../index.html">Home</a></li>
+						<li><a class="link" href="schedule.html">Schedule</a></li>
+						<li><a class="link" href="information.html">Information</a></li>
+						<li><a class="link" href="statistic.html">Statistic</a></li>
+						<li><a class="link" href="maps.html">Maps</a></li>
+						<li><a class="active" href="service.html">Service</a></li>
+					</ul>
+				</div>
+			</div>
+			<div id="content">
+				<h2>Upload</h2>
+				Software : ${LGSRV:VERSION}<br><br>
+				<table cellpadding="0" cellspacing="0" width="100%" class="upload" border="0">
+					<tr>
+						<th colspan="2">Select a file you want to upload...<div id="feedback"></div></th>
+					</tr>
+					<tr>
+						<form id="fileupload" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
+							<td class="left"><input type="file" name="myfile" /></td>
+							<td class="right"><input type="submit" name="submit" value="Upload" /></td>
+						</form>
+					</tr>
+				</table>
+				<br />
+				<div id="response">Response for Upload goes here...</div>
+				<br />
+				
+				<table cellpadding="0" cellspacing="0" width="100%" class="service" border="0">
+					<tr>
+						<td class="service">
+							<h2>Date & Time</h2>
+							<table cellpadding="0" cellspacing="0" class="setval" border="0">
+								<tr>
+									<td>Date:</td>
+									<td><input type="text" size="9" maxlength="8" id="datepicker" placeholder="YYYYMMDD"></td>
+								</tr>
+								<tr>
+									<td>Hour:</td>
+									<td><input type="text" size="2" maxlength="2" id="hourpicker" placeholder="HH"></td>
+								</tr>
+								<tr>
+									<td>Minute:</td>
+									<td><input type="text" size="2" maxlength="2" id="minpicker" placeholder="MM"></td>
+								</tr>
+								<tr>
+									<td colspan="2"><input type="submit" id="setdatetime" value="Set" /></td>
+								</tr>
+							</table>
+						</td>
+						<td class="service">
+							<h2>Nickname</h2>
+							<table cellpadding="0" cellspacing="0" class="setval" border="0">
+								<tr>
+									<td><input type="text" size="20" maxlength="16" id="botname" placeholder="${JSON:NICKNAME}" ></td>
+								</tr>
+								<tr>
+									<td><input type="submit" id="setbotname" value="Set" /></td>
+								</tr>
+							</table>
+						</td>
+						<td class="service">
+							<h2>Download</h2>
+							<ul class="download">
+								<li><a href="/blackbox.tgz">blackbox.tgz</a></li>
+								<li><a href="/status.html">status.html</a></li>
+								<li><a href="/status.txt">status.txt</a></li>
+								<li><a href="/.../usr/rcfg/Motion.xml">Motion.xml</a></li>
+								<li><a href="/.../usr/rcfg/Navi.xml">Navi.xml</a></li>
+							</ul>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</body>
+</html>

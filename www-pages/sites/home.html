@@ -1,0 +1,34 @@
+<div class="dummy">
+	<table cellpadding="0" cellspacing="0" width="100%" class="info" border="0">
+		<tr>
+			<th>Status:</th><td><div class="state"><div class="${JSON:ROBOT_STATE}"></div></div>${JSON:ROBOT_STATE}</td>
+			<th>Mode:</th><td>${JSON:MODE}</td>
+		</tr>
+		<tr>
+			<th>Repeat:</th><td class="capital"><div class="checkbox"><div class="${JSON:REPEAT}"></div></div>${JSON:REPEAT}</td>
+			<th>Firmware:</th><td>${JSON:VERSION}</td>
+		</tr>
+		<tr>
+			<th>Turbo:</th><td class="capital"><div class="checkbox"><div class="${JSON:TURBO}"></div></div>${JSON:TURBO}</td>
+			<th>Nickname:</th><td>${JSON:NICKNAME}</td>
+		</tr>
+		<tr>
+			<th>CPU Idle:</th>
+			<td colspan="3">
+				<div class="barframe">
+					<div class="bar" style="width: ${CPU:IDLE}%"></div>
+					<div class="val">${CPU:IDLE}%</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th>Battery:</th>
+			<td colspan="3">
+				<div class="barframe">
+					<div class="bar" style="width: ${JSON:BATTPERC}%"></div>
+					<div class="val">${JSON:BATTPERC}%</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>

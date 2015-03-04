@@ -1,0 +1,15 @@
+run on i386 (32bit) linux systems (so you do not need a real bot)
+
+1. checkout with git
+2. enable lines in Imakefile:
+CC=gcc
+STRIP=strip
+DEFINES += -DJSON_SIMUL
+3. use 'xmkmf' to create Makefile
+
+start the program with Option '-fg'
+
+$ ./lg.srv -fg
+
+now connect to port 6260 with your webbrowser
+

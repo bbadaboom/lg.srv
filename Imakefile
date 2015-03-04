@@ -1,0 +1,32 @@
+
+DEFINES = -DDEBUG_RAW -DDEBUG -Wall
+
+CC = /usr/local/angstrom/arm/bin/arm-angstrom-linux-gnueabi-gcc
+STRIP = /usr/local/angstrom/arm/bin/arm-angstrom-linux-gnueabi-strip
+CDEBUGFLAGS= -Os -g
+
+#CC=gcc
+#STRIP=strip
+#DEFINES+=JSON_SIMUL
+
+SK = sk/line.o sk/timer.o sk/handler.o sk/accept.o sk/asyconnect.o
+FK = fk/priqueue.o
+SYSLIBS=zlib/libz.a
+SYSLIBS=-Lzlib -lz -lrt
+
+INCLUDES = -I. -Isk -Ifk
+
+
+OBJ2 = u.o listen.o rd2.o write.o $(SK) $(FK) http.o vinter.o www.o proc.o
+OBJ2+= json.o timer.o
+
+
+SingleProgramTarget(lg.srv.unstripped,$(OBJ2) $(LOCAL_LIBRARIES),,$(SYSLIBS))
+
+all:: lg.srv
+
+lg.srv: lg.srv.unstripped
+	$(STRIP) -o lg.srv lg.srv.unstripped
+
+clean::
+	rm -f $(SK) $FK)

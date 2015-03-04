@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+	<head>
+		<title>${JSON:NICKNAME}'s Control Center</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="../favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		<script type="text/javascript" src="../javascript/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="../javascript/functions.js"></script>
+		<script type="text/javascript" src="../javascript/blkshow.js"></script>
+		<script>
+	function loadall() {
+		BlkShow('${BLKFILE:0}','BlkCanvas0');
+		BlkShow('${BLKFILE:1}','BlkCanvas1');
+		BlkShow('${BLKFILE:2}','BlkCanvas2');
+	}
+	window.onload = new Function("loadall();");
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+				<div id="title">
+					<a href="../index.html">
+						<span>${JSON:NICKNAME}'s</span><br />
+						Control Center
+					</a>
+				</div>
+				<div id="datetime"></div>
+				<div id="navigation">
+					<ul>
+						<li><a class="link" href="../index.html">Home</a></li>
+						<li><a class="link" href="schedule.html">Schedule</a></li>
+						<li><a class="link" href="information.html">Information</a></li>
+						<li><a class="link" href="statistic.html">Statistic</a></li>
+						<li><a class="active" href="maps.html">Maps</a></li>
+						<li><a class="link" href="service.html">Service</a></li>
+					</ul>
+				</div>
+			</div>
+			<div id="content">
+				<h2>Maps</h2>
+				<canvas id="BlkCanvas0" width="200" height="200" style="border:1px solid #000000;"></canvas>
+				<canvas id="BlkCanvas1" width="200" height="200" style="border:1px solid #000000;"></canvas>
+				<canvas id="BlkCanvas2" width="200" height="200" style="border:1px solid #000000;"></canvas>
+				<br/><br/>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</body>
+</html>
