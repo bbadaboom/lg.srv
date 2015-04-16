@@ -170,7 +170,7 @@ fprintf(stderr,"blocked write of %d bytes\n",cnt - max2);
 			x = __Sk_rwrite( l, cnt - max2 );	/* blocked write */
 			if ( x == -1 )
 			{
-				_skDelLine( l );
+				_VskDelLine( l );
 				return( -1 );
 			}
 			if ( (l->out->fill - l->out->ptr > 0 ) && l->out->ptr )
@@ -201,7 +201,7 @@ fprintf(stderr,"blocked write of %d bytes\n",cnt - max2);
 	x = __Sk_rwrite( l, 0 );	/* unblocked write */
 	if ( x == -1 )
 	{
-		_skDelLine( l );
+		_VskDelLine( l );
 		return( -1 );
 	}
 
@@ -221,7 +221,7 @@ int	_WriteString( SkLine *l, char *data )
 	'unblocked' flush output buffers
 **
 */
-int	skFlushLine( SkLine *l )
+int	VskFlushLine( SkLine *l )
 {
 	int		x;
 
@@ -231,7 +231,7 @@ int	skFlushLine( SkLine *l )
 	x = __Sk_rwrite( l, 0 );	/* unblocked write */
 	if ( x == -1 )
 	{
-		_skDelLine( l );
+		_VskDelLine( l );
 	}
 	return( x );
 }
@@ -255,7 +255,7 @@ int	_SyncLine( SkLine *l )
 			x = __Sk_rwrite( l, l->out->fill - l->out->ptr );
 			if ( x == -1 )
 			{
-				_skDelLine( l );
+				_VskDelLine( l );
 				return( x );
 			}
 	}
@@ -268,5 +268,5 @@ void	_AsySyncLine( SkLine *l )
 	if ( !l->out )
 		return;
 	while (( l->fd != -1 ) && (l->out->fill > l->out->ptr ))
-		skTimeoutStep(50);
+		VskTimeoutStep(50);
 }

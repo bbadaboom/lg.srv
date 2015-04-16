@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <signal.h>
 #include <stdarg.h>
-#include <stdlib.h>
-#include <sys/stat.h>
 
 #include "NetDrv.h"
 
@@ -224,7 +222,7 @@ static	void	_checkTimer( SkTimerType tid, void *own )
 	}
 	if ( !text )
 	{
-		skAddTimer( 1000*40, _checkTimer, 0 );
+		VskAddTimer( 1000*40, _checkTimer, 0 );
 		return;
 	}
 
@@ -269,8 +267,10 @@ static	void	_checkTimer( SkTimerType tid, void *own )
 	{	/* reached */
 		int		i;
 
-		skAddTimer( 1000*62, _checkTimer, 0 );
+		VskAddTimer( 1000*62, _checkTimer, 0 );
 		jsonSend( 0 );
+		SndMailAddLog( 0, "TIMER reached (wday=%d, hour=%d, min=%d, next=%d, now=%d)\r\n",tm.tm_wday,hour,min,next,now );
+
 		for( i=0; i<argc; i++ )
 		{
 			if ( !strcasecmp(argv[i],"ZZ") ||
@@ -282,11 +282,11 @@ static	void	_checkTimer( SkTimerType tid, void *own )
 				sprintf(cmd,"{\"COMMAND\":{\"CLEAN_MODE\":\"CLEAN_%s\"}}",argv[i]);
 				jsonSend( cmd );
 				jsonSend( 0 );
-				skTimeoutStep(20);
+				VskTimeoutStep(20);
 			}
 		}
 		jsonSend( "{\"COMMAND\":\"CLEAN_START\"}" );
-		skTimeoutStep(20);
+		VskTimeoutStep(20);
 		jsonSend( 0 );
 		jsonSend( "{\"COMMAND\":\"CLEAN_START\"}" );
 		if ( argv )
@@ -294,13 +294,13 @@ static	void	_checkTimer( SkTimerType tid, void *own )
 		return;
 	}
 	if ( next < now )
-		skAddTimer( 1000*40, _checkTimer, 0 );
+		VskAddTimer( 1000*40, _checkTimer, 0 );
 	else
 	{
 		int	diff = next-now;
 		if ( diff > 40 )
 			diff=40;
-		skAddTimer( diff*1000, _checkTimer, 0 );
+		VskAddTimer( diff*1000, _checkTimer, 0 );
 	}
 	if ( argv )
 		free(argv);

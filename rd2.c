@@ -42,6 +42,23 @@ static	int	_fill_cache( SkLine *l, int num )
 
 	while(( num > 0 ) && ( stopper-- ))
 	{
+#ifdef _WINDOWS
+		errno = 0;
+		x = recv( l->fd, l->in->cache + l->in->fill, max, 0 );
+
+		if ( x == -1 )
+			errno = WSAGetLastError();
+
+		if ((x == -1) && ( errno == WSAEWOULDBLOCK ))
+		{
+			return(0);
+/*** virt-flag make a possible blind-date ***/
+			FD_ZERO( &Mask );
+			FD_SET( l->fd, &Mask );
+			select( l->fd+1, &Mask, 0, 0, &tv );
+			continue;
+		}
+#else
 		x = read( l->fd, l->in->cache + l->in->fill, max );
 
 		if (( x == -1 ) && ( errno == EAGAIN ))
@@ -58,7 +75,8 @@ static	int	_fill_cache( SkLine *l, int num )
 		{
 			continue;
 		}
-		if (( x <= 0 ) || ( l->fd == -1 ))
+#endif
+		if (( x <= 0 ) || SkTerminate || ( l->fd == -1 ))
 		{
 			/* read-error */
 			close( l->fd );
@@ -80,7 +98,7 @@ static void	_LookPackets( SkLine * l )
 	int				has;
 	SkPacket		pck;
 
-	if ( l->fd == -1 )
+	if (( l->fd == -1 ) || SkTerminate )
 		return;
 
 	p = (unsigned char*)l->in->cache + l->in->ptr;
@@ -94,9 +112,9 @@ static void	_LookPackets( SkLine * l )
 	pck.data = (char*)p;
 	pck.ptype = 0;
 
-	skDoHandler( l, SK_H_PACKET, &pck );
+	VskDoHandler( l, SK_H_PACKET, &pck );
 
-	if ( l->fd == -1 )
+	if (( l->fd == -1 ) || SkTerminate )
 		return;
 
 	l->in->ptr = 0;
@@ -120,7 +138,7 @@ void _HReadable( SkLine *l, int pt, void *own, void *sys )
 
 	if ( x == -1 )
 	{
-		_skDelLine( l );
+		_VskDelLine( l );
 		return;
 	}
 

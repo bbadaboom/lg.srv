@@ -143,7 +143,7 @@ void  DoLogData( SkLine *l, char *data, int len )
 		_WriteString(l,"version          : show lg.srv version\r\n");
 		_WriteString(l,"state            : show state of lg.srv\r\n");
 		_WriteString(l,"quit | exit      : hangup this connection\r\n");
-		_WriteString(l,"log <mask>       : toggle logging of mask(4=timer,8=http)\r\n");
+		_WriteString(l,"log <mask>       : toggle logging of mask(4=timer,8=http,16=mail)\r\n");
 		_WriteString(l,"maxlog <num>     : set more bytes to log\r\n");
 	}
 	else if ( (argc>1) && !strcmp(argv[0],"log") )
@@ -172,7 +172,7 @@ void  DoLogData( SkLine *l, char *data, int len )
 	}
 	else if ( !strcmp(argv[0],"quit") || !strcmp(argv[0],"exit"))
 	{
-		skDisconnect( l );
+		VskDisconnect( l );
 		free( cmd_copy );
 		free( argv );
 		return;
@@ -195,12 +195,12 @@ void	Log( int lv, char *fmt, ... )
 	if ( debug & lv )
 		printf("%s",out);
 
-	for( l=skGetLinesRoot(); l; l=n )
+	for( l=VskGetLinesRoot(); l; l=n )
 	{
 		n=l->next;
 		if ( l->other_v != 1 )
 			continue;
-		if ( l->intid != 1 )
+		if ( l->intid != SK_ID_HTTP )
 			continue;
 		if ( l->fd == -1 )
 			continue;
@@ -223,12 +223,12 @@ int	LogActive( int lv )
 	SkLine		*n;
 	if ( debug & lv )
 		return 1;
-	for( l=skGetLinesRoot(); l; l=n )
+	for( l=VskGetLinesRoot(); l; l=n )
 	{
 		n=l->next;
 		if ( l->other_v != 1 )
 			continue;
-		if ( l->intid != 1 )
+		if ( l->intid != SK_ID_HTTP )
 			continue;
 		if ( l->fd == -1 )
 			continue;

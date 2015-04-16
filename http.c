@@ -1,8 +1,6 @@
 #include <NetDrv.h>
 #include <stdarg.h>
 #include <dirent.h>
-#include <stdlib.h>
-#include <sys/stat.h>
 
 #define	DESTPATH	"/usr/tmp/"
 #define DESTLEN     9	/* strlen(DESTPATH) */
@@ -11,6 +9,7 @@ extern  char		    *cstr;
 extern	int				debug;
 extern	JsonVars		json;
 extern	TimerVars		timer;
+extern	MailVars		mail;
 
 extern int	__t_open( char *fname );
 extern unsigned long	__t_getsize( int fd );
@@ -361,7 +360,7 @@ static	void	PrepareVars( void )
 	cpu_sys = (float)a_sys/100;
 	cpu_nice = (float)a_nice/100;
 
-	skTimeoutStep(10);
+	VskTimeoutStep(10);
 }
 
 #if 0
@@ -451,7 +450,8 @@ static	void	SendUploaded( SkLine *l )
 	else if (!strncmp(p,"status.html",11) ||
 			!strncmp(p,"Motion.xml",10) ||
 			!strncmp(p,"Navi.xml",8) ||
-			!strncmp(p,"status.txt",10))
+			!strncmp(p,"status.txt",10) ||
+			!strncmp(p,"mail.cfg",8))
 	{
 		WriteSimpleHttp(l,"<span id=\"fname\">%s</span> was uploaded.<br>",p);
 		WriteSimpleHttp(l,"<input type=\"button\" id=\"install\" value=\"Install\"/>");
@@ -546,6 +546,22 @@ static	int	DoActivate( SkLine *l, char *param )
 			system("rm /usr/bin/ssh; rm /usr/bin/scp; ln -s /usr/sbin/dropbearmulti /usr/bin/ssh; ln -s /usr/sbin/dropbearmulti /usr/bin/scp");
 		}
 	}
+	else if ( strstr(param,"mail.cfg") )
+	{
+		char	*to="/usr/data/htdocs/mail.cfg";
+		rename(to,"/usr/data/htdocs/mail.svd");
+		if ( movefile( from, to ) )
+		{
+			failed++;
+			rename("/usr/data/htdocs/mail.svd",to);
+			unlink(from);
+		}
+		else
+		{
+			unlink("/usr/data/htdocs/mail.svd");
+			rc=1;
+		}
+	}
 	else if ( strstr(param,"status.txt") )
 	{
 		char	*to="/usr/data/htdocs/status.txt";
@@ -559,7 +575,6 @@ static	int	DoActivate( SkLine *l, char *param )
 		else
 		{
 			unlink("/usr/data/htdocs/status.svd");
-			rc=1;
 		}
 	}
 	else if ( strstr(param,"status.html") )
@@ -575,7 +590,6 @@ static	int	DoActivate( SkLine *l, char *param )
 		else
 		{
 			unlink("/usr/data/htdocs/status.svd");
-			rc=1;
 		}
 	}
 	else if ( strstr(param,"Motion.xml") )
@@ -591,7 +605,6 @@ static	int	DoActivate( SkLine *l, char *param )
 		else
 		{
 			unlink("/usr/rcfg/Motion.svd");
-			rc=1;
 		}
 	}
 	else if ( strstr(param,"Navi.xml") )
@@ -607,7 +620,6 @@ static	int	DoActivate( SkLine *l, char *param )
 		else
 		{
 			unlink("/usr/rcfg/Navi.svd");
-			rc=1;
 		}
 	}
 
@@ -700,7 +712,7 @@ void	HttpLoadCleaningRecord( SkTimerType tid, void *own )
 	char	*val=0;
 	int		len;
 
-	skAddTimer(28000,HttpLoadCleaningRecord,0);	/* try again in 1 minute */
+	VskAddTimer(28000,HttpLoadCleaningRecord,0);	/* try again in 1 minute */
 
 	if ( num_open )
 		return;
@@ -869,6 +881,30 @@ static	char	retbuf[512];
 		sprintf(retbuf,"%s",timer.sat ? timer.sat:"");
 	else if ( (sz == 12) && !strncmp(code,"TIMER:SUNDAY",sz) )
 		sprintf(retbuf,"%s",timer.sun ? timer.sun:"");
+	else if ( (sz == 13) && !strncmp(code,"MAIL:RECEIVER",sz) )
+		sprintf(retbuf,"%s",mail.send.receiver ? mail.send.receiver:"");
+	else if ( (sz == 13) && !strncmp(code,"MAIL:RESPONSE",sz) )
+		sprintf(retbuf,"%s",mail.response ? mail.response:"");
+	else if ( (sz == 12) && !strncmp(code,"MAIL:GATEWAY",sz) )
+		sprintf(retbuf,"%s",mail.send.gateway ? mail.send.gateway:"");
+	else if ( (sz == 9) && !strncmp(code,"MAIL:USER",sz) )
+		sprintf(retbuf,"%s",mail.send.user ? mail.send.user:"");
+	else if ( (sz == 9) && !strncmp(code,"MAIL:PASS",sz) )
+		sprintf(retbuf,"%s",mail.send.pass ? mail.send.pass:"");
+	else if ( (sz == 13) && !strncmp(code,"MAIL:SLENABLE",sz) )
+		sprintf(retbuf,"%s",mail.send.enable ? "checked":"");
+	else if ( (sz == 13) && !strncmp(code,"MAIL:P3SERVER",sz) )
+		sprintf(retbuf,"%s",mail.get.gateway ? mail.get.gateway:"");
+	else if ( (sz == 11) && !strncmp(code,"MAIL:P3USER",sz) )
+		sprintf(retbuf,"%s",mail.get.user ? mail.get.user:"");
+	else if ( (sz == 11) && !strncmp(code,"MAIL:P3PASS",sz) )
+		sprintf(retbuf,"%s",mail.get.pass ? mail.get.pass:"");
+	else if ( (sz == 13) && !strncmp(code,"MAIL:P3ENABLE",sz) )
+		sprintf(retbuf,"%s",mail.get.enable ? "checked":"");
+	else if ( (sz == 11) && !strncmp(code,"MAIL:P3SIGN",sz) )
+		sprintf(retbuf,"%s",mail.get.sign ? mail.get.sign:"");
+	else if ( (sz == 12) && !strncmp(code,"MAIL:P3CYCLE",sz) )
+		sprintf(retbuf,"%d",mail.get.cycle);
 	else if ( (sz == 12) && !strncmp(code,"SYS:TIME-H:M",sz) )
 		sprintf(retbuf,"%d:%02d",tm.tm_hour,tm.tm_min);
 	else if ( (sz == 14) && !strncmp(code,"SYS:TIME-H:M:S",sz) )
@@ -978,7 +1014,7 @@ static	void	SendFile( SkLine *l, char *fname )
 		WriteSimpleHttp( l, hdr "<body>unknown REQUEST!<BR>" );
 		WriteSimpleHttp( l, "SendFile(%s)",fname );
 		WriteSimpleHttp( l, "</body></html>");
-		skCloseAtEmpty(l);
+		VskCloseAtEmpty(l);
 		return;
 	}
 	*p=0;
@@ -993,7 +1029,7 @@ static	void	SendFile( SkLine *l, char *fname )
 //printf("file not found : %s\n",fname);
 			WriteSimpleHttp( l, hdr "<body>file not found : 401<BR>" );
 			WriteSimpleHttp( l, "</body></html>");
-			skCloseAtEmpty(l);
+			VskCloseAtEmpty(l);
 			num_open--;
 			return;
 		}
@@ -1053,7 +1089,7 @@ static	void	SendFile( SkLine *l, char *fname )
 			{
 				WriteSimpleHttp( l, hdr "<body>file not found : 401<BR>" );
 				WriteSimpleHttp( l, "</body></html>");
-				skCloseAtEmpty(l);
+				VskCloseAtEmpty(l);
 				num_open--;
 				return;
 			}
@@ -1151,7 +1187,7 @@ static	void	SendFile( SkLine *l, char *fname )
 			WriteSimpleHttp( l, hdr_binary, st.st_size );
 		}
 	}
-	skMultiDisable(l,0);
+	VskMultiDisable(l,0);
 	if ( !intern_file )
 	{
 		int		xb;
@@ -1197,7 +1233,7 @@ static	void	SendFile( SkLine *l, char *fname )
 		Log(8,"ifile: %d bytes written\r\n",xsum);
 	}
 	_SyncLine(l);
-	skMultiEnable(l,0);
+	VskMultiEnable(l,0);
 	num_open--;
 }
 
@@ -1305,7 +1341,7 @@ static	void	DoPostData( SkLine *l, char *data, int len )
 			{
 				SendUploadFail(l);
 			}
-			skCloseAtEmpty(l);
+			VskCloseAtEmpty(l);
 			return;
 		}
 		break;
@@ -1333,7 +1369,7 @@ static	void	DoPostData( SkLine *l, char *data, int len )
 				strcpy(xfname,"upfail.html ");
 				SendFile( l, xfname );
 			}
-			skCloseAtEmpty(l);
+			VskCloseAtEmpty(l);
 			return;
 		}
 		break;
@@ -1406,10 +1442,10 @@ void	HttpPck( SkLine *l, int pt, void *own, void *sys )
 		}
 		*t=*f;
 		rc=DoActivate(l,buff);
-		skCloseAtEmpty(l);
+		VskCloseAtEmpty(l);
 		if ( rc == 1 )
 		{
-			skTimeoutStep(1000);
+			VskTimeoutStep(1000);
 			_RestartMe();
 			return;
 		}
@@ -1450,7 +1486,7 @@ void	HttpPck( SkLine *l, int pt, void *own, void *sys )
 		WriteSimpleHttp( l, hdr_response );
 		WriteSimpleHttp( l, buff+DESTLEN );
 		WriteSimpleHttp( l, " removed" );
-		skCloseAtEmpty(l);
+		VskCloseAtEmpty(l);
 		return;
 	}
 	else if ( !strncmp(data,"GET /restart?",13) )
@@ -1465,11 +1501,11 @@ void	HttpPck( SkLine *l, int pt, void *own, void *sys )
 		strcpy(buff,f);
 		WriteSimpleHttp( l, hdr "<body><h4>restart of %s inititiated</h4>",f);
 		WriteSimpleHttp( l, "</body></html>");
-		skCloseAtEmpty(l);
+		VskCloseAtEmpty(l);
 
 		if ( !strcmp(buff,"lg.srv") )
 		{
-			skTimeoutStep(1000);
+			VskTimeoutStep(1000);
 			_RestartMe();
 			return;
 		}
@@ -1554,7 +1590,7 @@ static		int		cur_mode=-1;
 
 		WriteSimpleHttp( l, "retcode : %d<br>",rc);
 		WriteSimpleHttp( l, "</body></html>");
-		skCloseAtEmpty(l);
+		VskCloseAtEmpty(l);
 		return;
 	}
 	else if ( !strncmp(data,"GET /sites/schedule.html?",25) )
@@ -1587,7 +1623,40 @@ static		int		cur_mode=-1;
 		*q=0;
 		RunTimerParam(locdata);
 		SendFile(l,def);
-		skCloseAtEmpty(l);
+		VskCloseAtEmpty(l);
+		return;
+	}
+	else if ( !strncmp(data,"GET /sites/mailcfg.html?",24) )
+	{
+		char			def[32]="sites/mailcfg.html ";
+		char			locdata[1024];
+		char			*p, *q;
+		char  			hx[3];
+		unsigned int	b;
+		int				f=0;
+
+		for( p=data+24, q=locdata; *p; f++, p++, q++ )
+		{
+			if ( f == 510 )
+				break;
+			if ( *p == ' ' )
+				break;
+			if ( *p != '%' )
+			{
+				*q=*p;
+				continue;
+			}
+			memcpy(hx,p+1,2);
+			hx[2]=0;
+			sscanf(hx,"%x",&b);
+			*q=b;
+			p+=2;
+			continue;
+		}
+		*q=0;
+		RunMailCfgParam(locdata);
+		SendFile(l,def);
+		VskCloseAtEmpty(l);
 		return;
 	}
 	else if ( !strncmp(data,"GET / HTTP",10) )
@@ -1598,7 +1667,7 @@ static		int		cur_mode=-1;
 		_SyncLine(l);
 		Log(8,"*** done (%s)\r\n",def);
 #else
-		skCloseAtEmpty(l);
+		VskCloseAtEmpty(l);
 #endif
 		return;
 	}
@@ -1630,7 +1699,7 @@ static		int		cur_mode=-1;
 			xb=fread(buff,1,5000,fp);
 		}
 		pclose(fp);
-		skCloseAtEmpty(l);
+		VskCloseAtEmpty(l);
 		return;
 	}
 	else if ( !strncmp(data,"GET /",5) )
@@ -1648,7 +1717,7 @@ static		int		cur_mode=-1;
 		_SyncLine(l);
 		Log(8,"*** done (%s)\r\n",fname);
 #else
-		skCloseAtEmpty(l);
+		VskCloseAtEmpty(l);
 #endif
 		free(fname);
 		return;
@@ -1660,7 +1729,7 @@ static		int		cur_mode=-1;
 	}
 
 	WriteSimpleHttp( l, "</body></html>");
-	skCloseAtEmpty(l);
+	VskCloseAtEmpty(l);
 	Log(8,"*** done - closed\r\n");
 }
 

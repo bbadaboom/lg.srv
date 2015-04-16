@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <signal.h>
 #include <stdarg.h>
-#include <stdlib.h>
 
 #include "NetDrv.h"
 
@@ -43,9 +42,16 @@
  * 19.02.2015   2.14   fx2 upload/download Motion.xml+Navi.xml +Turbo +Repeat
  * 20.02.2015   2.15   fx2 Nickname CC, bugfix strlen(Navi.xml), Mode-button
  * 20.02.2015   2.16   fx2 Nickname CC on all pages
+ * 12.04.2015   2.17   fx2 send mail after work (no config via web !)
+ *                         log json=16, mail=2
+ * 14.04.2015   2.18   fx2 setup mail via web interface
+ * 14.04.2015   2.19   fx2 bug 'Enable=yes' in mail config fixed
+ * 14.04.2015   2.20   fx2 allow 50 character len in mail config entries
+ * 15.04.2015   2.21   fx2 smtp-password as '***' , enable as checkbox
+ * 15.04.2015   2.22   fx2 pop3 function added
 */
 
-char *cstr = "lg.srv, V2.16 compiled 20.02.2015, by fx2";
+char *cstr = "lg.srv, V2.22 compiled 15.04.2015, by fx2";
 
 int	debug = 0;		// increasing debug output (0 to 9)
 
@@ -57,6 +63,7 @@ static	int		maxlog=48;
 
 	JsonVars	json;
 	TimerVars	timer;
+	MailVars	mail;
 
 void	SetMaxLog( int nr )
 {
@@ -130,7 +137,7 @@ static	void	_clientData( SkLine *l, int pt, void *own, void *sys )
 	{
 		Log(2," # request too long ! - ignoring (wait for fault)\r\n");
 		noWrongSize++;
-		skDisconnect( l );
+		VskDisconnect( l );
 		return;
 	}
 
@@ -159,14 +166,14 @@ void	_clientConnected( SkLine *cl, int pt, void *own, void *sys )
 	{
 		/* too many clients : disconnect */
 		Log(1,"too many clients - disconnect client\r\n");
-		skDisconnect( cl );
+		VskDisconnect( cl );
 		return;
 	}
 	cl_array[i] = cl;
 
-	skAddHandler( cl, SK_H_READABLE, _HReadable, 0 );
-	skAddHandler( cl, SK_H_PACKET, _clientData, 0 );
-	skAddHandler( cl, SK_H_CLOSE, _clientClose, 0 );
+	VskAddHandler( cl, SK_H_READABLE, _HReadable, 0 );
+	VskAddHandler( cl, SK_H_PACKET, _clientData, 0 );
+	VskAddHandler( cl, SK_H_CLOSE, _clientClose, 0 );
 
 	cl->data = malloc( sizeof(struct _ClientData) );
 	memset(cl->data,0, sizeof(struct _ClientData) );
@@ -241,8 +248,10 @@ int main( int argc, char ** argv )
 		{
 			printf("usage: %s [-port <nr>] [-debug=mask] [-fg]\n", *argv);
 			printf("  debug-mask :  1 : quiet debug\n");
+			printf("  debug-mask :  2 : send mail\n");
 			printf("  debug-mask :  4 : timer\n");
 			printf("  debug-mask :  8 : http traffic\n");
+			printf("  debug-mask : 16 : json traffic\n");
 			return 1;
 		}
 	}
@@ -253,8 +262,10 @@ int main( int argc, char ** argv )
 
 	memset(&json,0,sizeof(JsonVars));
 	memset(&timer,0,sizeof(TimerVars));
+	memset(&mail,0,sizeof(MailVars));
 
 	ReadTimerFromFile();
+	ReadMailConfigFromFile();
 	HttpLoadCleaningRecord(0,0);
 
 	system("ifconfig lo up");
@@ -273,7 +284,9 @@ int main( int argc, char ** argv )
 
 	StartTimer();
 
-	skMainLoop();
+	jsonSend(0);
+
+	VskMainLoop();
 
 	return( 0 );
 }
@@ -348,7 +361,7 @@ void	_RestartMe( void )
 	if ( listen_line )
 	{
 		port=listen_line->port;
-		skDisconnect( listen_line );
+		VskDisconnect( listen_line );
 	}
 	listen_line=0;
 

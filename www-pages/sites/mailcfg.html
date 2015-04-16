@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+	<head>
+		<title>${JSON:NICKNAME}'s Control Center</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="../favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		<script type="text/javascript" src="../javascript/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="../javascript/functions.js"></script>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+				<div id="title">
+					<a href="../index.html">
+						<span>${JSON:NICKNAME}'s</span><br />
+						Control Center
+					</a>
+				</div>
+				<div id="datetime"></div>
+				<div id="navigation">
+					<ul>
+						<li><a class="link" href="../index.html">Home</a></li>
+						<li><a class="link" href="schedule.html">Schedule</a></li>
+						<li><a class="link" href="information.html">Information</a></li>
+						<li><a class="link" href="statistic.html">Statistic</a></li>
+						<li><a class="link" href="maps.html">Maps</a></li>
+						<li><a class="link" href="service.html">Service</a></li>
+						<li><a class="active" href="mailcfg.html">Mail</a></li>
+					</ul>
+				</div>
+			</div>
+			<div id="content">
+				<h2>Mail config</h2>
+				<form action="mailcfg.html" method="get">
+					<table cellpadding="0" cellspacing="0" class="timing" border="0">
+						<tr>
+							<td>Receiver</td>
+							<td><input type="text" name="RECEIVER" size="50" maxlength="50" value="${MAIL:RECEIVER}" /></td>
+						</tr>
+						<tr>
+							<td>Smtp-Server</td>
+							<td><input type="text" name="GATEWAY" size="50" maxlength="50" value="${MAIL:GATEWAY}" /></td>
+						</tr>
+						<tr>
+							<td>Smtp-User</td>
+							<td><input type="text" name="USER" size="50" maxlength="50" value="${MAIL:USER}" /></td>
+						</tr>
+						<tr>
+							<td>Smtp-Password</td>
+							<td><input type="password" name="PASS" size="50" maxlength="50" value="${MAIL:PASS}" /></td>
+							<td> <input type="submit" name="ACTION" value="Test" /> </td>
+						</tr>
+						<tr>
+							<td>Enable</td>
+							<td> <input type="checkbox" name="SLENABLE" value="yes" ${MAIL:SLENABLE} /> </td>
+						</tr>
+						<tr>
+							<td>Pop3-Sign</td>
+							<td><input type="text" name="P3SIGN" size="50" maxlength="50" value="${MAIL:P3SIGN}" /></td>
+						</tr>
+						<tr>
+							<td>Pop3-Server</td>
+							<td><input type="text" name="P3SERVER" size="50" maxlength="50" value="${MAIL:P3SERVER}" /></td>
+						</tr>
+						<tr>
+							<td>Pop3-Cycle</td>
+							<td><input type="text" name="P3CYCLE" size="50" maxlength="10" value="${MAIL:P3CYCLE}" /></td>
+						</tr>
+						<tr>
+							<td>Pop3-User</td>
+							<td><input type="text" name="P3USER" size="50" maxlength="50" value="${MAIL:P3USER}" /></td>
+						</tr>
+						<tr>
+							<td>Pop3-Password</td>
+							<td><input type="password" name="P3PASS" size="50" maxlength="50" value="${MAIL:P3PASS}" /></td>
+							<td> <input type="submit" name="ACTION" value="Recv" /> </td>
+						</tr>
+						<tr>
+							<td>Enable</td>
+							<td> <input type="checkbox" name="P3ENABLE" value="yes" ${MAIL:P3ENABLE} /> </td>
+						</tr>
+						<tr>
+							<td colspan="2">
+							<input type="submit" name="ACTION" value="Save" />
+							</td>
+						</tr>
+					</table>
+<br> ${MAIL:RESPONSE}<br>
+				</form>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</body>
+</html>

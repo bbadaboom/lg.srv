@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <signal.h>
 #include <stdarg.h>
-#include <stdlib.h>
 
 #define SkLineData		struct _JsonData
 
@@ -56,10 +55,12 @@ printf("\n");
 }
 
 static	SkLine	*cmd_line=0;
+static	SkLine	*session_line=0;
 
 static	void	_clientClose( SkLine *l, int pt, void *own, void *sys )
 {
 	cmd_line=0;
+
 	if ( l->data )
 	{
 		*(l->data->f1) = 0;	/* mark for loop */
@@ -68,14 +69,20 @@ static	void	_clientClose( SkLine *l, int pt, void *own, void *sys )
 	}
 }
 
-static	void	GetJson( char *in, char **dest, char *property )
+static	void	_sessionClose( SkLine *l, int pt, void *own, void *sys )
+{
+	session_line=0;
+
+}
+
+static	int	GetJson( char *in, char **dest, char *property )
 {
 	char	*p = strstr(in,property);
 	char	*pe;
 	int		sl;
 
 	if ( !p )
-		return;
+		return 0;
 	p += strlen(property)+1;	/* go to value */
 	pe = strchr(p,'"');
 	if ( *dest )
@@ -84,7 +91,11 @@ static	void	GetJson( char *in, char **dest, char *property )
 	*dest = malloc(sl+1);
 	memcpy(*dest,p,sl);
 	memset((*dest)+sl,0,1);
+
+	return 1;
 }
+
+static	int	session_positiv=0;
 
 static	void	_clientData( SkLine *l, int pt, void *own, void *sys )
 {
@@ -93,6 +104,7 @@ static	void	_clientData( SkLine *l, int pt, void *own, void *sys )
 	int				size=pck->len;
 	short			len;
 	int				i=0;
+	char			*session=0;
 
 	while( size > 12 )
 	{
@@ -101,13 +113,19 @@ static	void	_clientData( SkLine *l, int pt, void *own, void *sys )
 			break;
 		data[ len +12 -1 ] = 0;	/* replace last char with 0 */
 
-		GetJson( data+12, &json.robot_state, "\"ROBOT_STATE\":" );
+		Log(16,"json: %s\r\n",data+12);
+
+		if( GetJson( data+12, &json.robot_state, "\"ROBOT_STATE\":" ) )
+		{
+			NewState( json.robot_state );
+		}
 		GetJson( data+12, &json.turbo, "\"TURBO\":" );
 		GetJson( data+12, &json.repeat, "\"REPEAT\":" );
 		GetJson( data+12, &json.batt, "\"BATT\":" );
 		GetJson( data+12, &json.mode, "\"MODE\":" );
 		GetJson( data+12, &json.nickname, "\"NICKNAME\":" );
 		GetJson( data+12, &json.version, "\"VERSION\":" );
+		GetJson( data+12, &session, "\"SESSION\":" );
 
 		if ( l && l->data && (*(l->data->f1)>0) )
 			*(l->data->f1) -= 1;
@@ -124,9 +142,74 @@ static	void	_clientData( SkLine *l, int pt, void *own, void *sys )
 		sprintf(tmp,"%d",batt*20);
 		json.battperc=strdup(tmp);
 	}
+	if ( session )
+	{
+		session_positiv = strstr(session,"POSITIVE")?1:0;
+		free(session);
+	}
 
 #if 0
 	printf("_clientData: %d bytes\r\n",pck->len);
+
+	for( i=0, data=pck->data; i<pck->len; i++ )
+	{
+		if ( !(i%16) && i )
+			printf("\r\n");
+		printf("%02x ",data[i]);
+	}
+	printf("\r\n");
+#endif
+	return;
+}
+
+static	SkTimerType stid=0;
+
+static void _sessionAlive( SkTimerType tid, void *own )
+{
+	stid=0;
+	if ( !cmd_line )
+		return;
+
+	sendJSONPacket(cmd_line, "{\"SESSION\":\"ALIVE\"}" );
+
+	stid=VskAddTimer(2000, _sessionAlive, 0 );
+}
+
+static	void	_sessionData( SkLine *l, int pt, void *own, void *sys )
+{
+	SkPacket		*pck=sys;
+	char			*data=pck->data;
+	int				size=pck->len;
+	short			len;
+	int				i=0;
+	int				disco=0;
+
+	while( size > 12 )
+	{
+		memcpy(&len,data+8,2);
+		if ( size < len+12 )
+			break;
+		data[ len +12 -1 ] = 0;	/* replace last char with 0 */
+
+		Log(1,"session: %s\r\n",data+12);
+
+//		if ( !strstr(data+12,"ENABLE") )
+//		{
+//			sendJSONPacket(session_line, "{\"COMMAND\":\"DISCONNECT\"}" );
+			disco=1;
+//		}
+
+		data += len+12;
+		size -= (len+12);
+		i++;
+	}
+	if ( !stid )
+		stid=VskAddTimer(2000, _sessionAlive, 0 );
+
+	if(disco)
+		VskDisconnect(l);
+#if 0
+	printf("_sessionData: %d bytes\r\n",pck->len);
 
 	for( i=0, data=pck->data; i<pck->len; i++ )
 	{
@@ -154,10 +237,10 @@ static SkLine	*RawConnect( char *service, char *host )
 {
 	SkLine *l[2]={0,0};
 
-	skAsyConnect( host, service, 500, _asyConn, l );
+	VskAsyConnect( host, service, 500, _asyConn, l );
 
 	while( l[0] == 0 )
-		skTimeoutStep(100);
+		VskTimeoutStep(100);
 
 	return l[1];
 }
@@ -178,6 +261,32 @@ static void json_simu( void )
 }
 #endif
 
+static void _establish4002( void )
+{
+	SkLine	*l;
+
+	if ( session_line )
+		return;
+
+	if ( session_positiv )
+		return;
+
+#ifdef JSON_REDIRECT
+		l=RawConnect("4002","192.168.28.112");
+#else
+		l=RawConnect("4002","127.0.0.1");
+#endif
+	if (!l )
+		return;
+	session_line=l;
+
+	VskAddHandler( l, SK_H_READABLE, _HReadable, 0 );
+	VskAddHandler( l, SK_H_PACKET, _sessionData, 0 );
+	VskAddHandler( l, SK_H_CLOSE, _sessionClose, 0 );
+
+	sendJSONPacket(l, "{\"CONNECT\":\"REQUEST\"}" );
+}
+
 int	jsonSend( char *command )
 {
 	int		clen=command ? strlen(command) : 0;
@@ -193,21 +302,26 @@ int	jsonSend( char *command )
 	return 0;
 #endif
 
+	_establish4002();
+
 	if ( cmd_line )
 	{
 		l=cmd_line;
 	}
 	else
 	{
+#ifdef JSON_REDIRECT
+		l=RawConnect("4000","192.168.28.112");
+#else
 		l=RawConnect("4000","127.0.0.1");
-//		l=RawConnect("4000","192.168.28.112");
+#endif
 		if (!l )
 			return -2;
 		cmd_line=l;
 		f1++;
-		skAddHandler( l, SK_H_READABLE, _HReadable, 0 );
-		skAddHandler( l, SK_H_PACKET, _clientData, 0 );
-		skAddHandler( l, SK_H_CLOSE, _clientClose, 0 );
+		VskAddHandler( l, SK_H_READABLE, _HReadable, 0 );
+		VskAddHandler( l, SK_H_PACKET, _clientData, 0 );
+		VskAddHandler( l, SK_H_CLOSE, _clientClose, 0 );
 
 		l->data = malloc(sizeof(JsonData));
 		l->data->f1 = &f1;
@@ -220,7 +334,7 @@ int	jsonSend( char *command )
 	}
 
 	while( f1 && --cnt )
-		skTimeoutStep(30);
+		VskTimeoutStep(30);
 
 	return 0;
 }
