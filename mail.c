@@ -255,7 +255,7 @@ int sendMail( char *subject, char *text )
 	return( 0 );
 }
 
-#define MAXLEN	1024
+#define MAXLEN	2048
 static	char		*FNAME="/usr/data/htdocs/mail.cfg";
 static	char		oplog[MAXLEN];
 static	int			oplog_len=0;
@@ -328,7 +328,6 @@ void	SndMailAddLog( int to_response, char *fmt, ... )
 		strcpy(oplog+oplog_len,buff);
 		oplog_len+=txtlen;
 	}
-printf("oplog:[%s]\n",oplog);
 }
 
 void	NewState( char *stext )
@@ -759,6 +758,8 @@ static int lastrc=0;
 
 	if ( rc != lastrc )
 		SndMailAddLog( 0, "  rc = %d  (%s)", rc,MErrText(rc) );
+
+	lastrc=rc;
 }
 
 void	ReadMailConfigFromFile( void )

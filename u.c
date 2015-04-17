@@ -49,9 +49,10 @@
  * 14.04.2015   2.20   fx2 allow 50 character len in mail config entries
  * 15.04.2015   2.21   fx2 smtp-password as '***' , enable as checkbox
  * 15.04.2015   2.22   fx2 pop3 function added
+ * 17.04.2015   2.23   fx2 suppress bombing same message in log
 */
 
-char *cstr = "lg.srv, V2.22 compiled 15.04.2015, by fx2";
+char *cstr = "lg.srv, V2.23 compiled 17.04.2015, by fx2";
 
 int	debug = 0;		// increasing debug output (0 to 9)
 
