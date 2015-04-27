@@ -172,7 +172,7 @@ void  DoLogData( SkLine *l, char *data, int len )
 	}
 	else if ( !strcmp(argv[0],"quit") || !strcmp(argv[0],"exit"))
 	{
-		VskDisconnect( l );
+		skDisconnect( l );
 		free( cmd_copy );
 		free( argv );
 		return;
@@ -195,7 +195,7 @@ void	Log( int lv, char *fmt, ... )
 	if ( debug & lv )
 		printf("%s",out);
 
-	for( l=VskGetLinesRoot(); l; l=n )
+	for( l=skGetLinesRoot(); l; l=n )
 	{
 		n=l->next;
 		if ( l->other_v != 1 )
@@ -223,7 +223,7 @@ int	LogActive( int lv )
 	SkLine		*n;
 	if ( debug & lv )
 		return 1;
-	for( l=VskGetLinesRoot(); l; l=n )
+	for( l=skGetLinesRoot(); l; l=n )
 	{
 		n=l->next;
 		if ( l->other_v != 1 )

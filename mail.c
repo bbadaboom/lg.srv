@@ -7,9 +7,11 @@
 #include <net/if.h>
 #include <sys/file.h>
 #include <sys/time.h>
+#include <sys/stat.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <stdarg.h>
+#include <unistd.h>
 
 #include <openssl/ssl.h>
 
@@ -356,16 +358,16 @@ void	NewState( char *stext )
 	else if (( cur_state != 99 ) && ( old_state == 99 ) && snd_tid )
 	{
 		Log(2,"sendMail: send timer deactivated\r\n");
-		VskRemoveTimer( snd_tid );
+		skRemoveTimer( snd_tid );
 		snd_tid=0;
 	}
 
 	if ( xtime )
 	{
 		if ( snd_tid )
-			VskRemoveTimer( snd_tid );
+			skRemoveTimer( snd_tid );
 		Log(2,"sendMail: send timer activated (%d msec)\r\n",xtime);
-		snd_tid=VskAddTimer( xtime, _sendTimer, 0 );
+		snd_tid=skAddTimer( xtime, _sendTimer, 0 );
 		return;
 	}
 }
@@ -542,7 +544,7 @@ static	int getMail( int bg  )
 			bptr++;
 			continue;
 		}
-		VskTimeoutStep(10);
+		skTimeoutStep(10);
 
 		switch( state )
 		{
@@ -651,7 +653,7 @@ static	int getMail( int bg  )
 							SkTimerType	tid;
 							if ( *(pt+5) == ',' )
 								time+=atoi(pt+6)*60000;
-							tid=VskAddTimer( time?time:10, _timedStart, 0 );
+							tid=skAddTimer( time?time:10, _timedStart, 0 );
 							if ( !tid_start )
 								tid_start=tid;
 
@@ -752,7 +754,7 @@ static int lastrc=0;
 		return;
 
 	if ( mail.get.cycle )
-		tid_recv=VskAddTimer( mail.get.cycle*60000, _cycleGet, 0 );
+		tid_recv=skAddTimer( mail.get.cycle*60000, _cycleGet, 0 );
 
 	rc= getMail( 0 );
 
@@ -864,10 +866,10 @@ void	ReadMailConfigFromFile( void )
 	if ( mail.get.cycle != old_cycle )
 	{
 		if ( tid_recv )
-			VskRemoveTimer( tid_recv );
+			skRemoveTimer( tid_recv );
 		tid_recv=0;
 		if ( mail.get.cycle && mail.get.enable )
-			tid_recv=VskAddTimer( mail.get.cycle*60000, _cycleGet, 0 );
+			tid_recv=skAddTimer( mail.get.cycle*60000, _cycleGet, 0 );
 	}
 }
 
@@ -986,10 +988,10 @@ void RunMailCfgParam( char *param)
 		if ( mail.get.cycle != old_cycle )
 		{
 			if ( tid_recv )
-				VskRemoveTimer( tid_recv );
+				skRemoveTimer( tid_recv );
 			tid_recv=0;
 			if ( mail.get.cycle && mail.get.enable )
-				tid_recv=VskAddTimer( mail.get.cycle*60000, _cycleGet, 0 );
+				tid_recv=skAddTimer( mail.get.cycle*60000, _cycleGet, 0 );
 		}
 	}
 	else if ( action == 0 )

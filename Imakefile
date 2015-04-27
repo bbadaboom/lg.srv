@@ -1,5 +1,3 @@
-XCOMM define UseServ
-XCOMM include <../../../Vis.tmpl>
 
 #CDEBUGFLAGS= -g
 DEFINES = -DDEBUG_RAW -DDEBUG -Wall
@@ -14,29 +12,14 @@ CDEBUGFLAGS= -Os -g
 
 SKIT = sk/line.o sk/timer.o sk/handler.o sk/accept.o sk/asyconnect.o
 FKIT = fk/priqueue.o
-JPWRITE = jpwrite/jcapimin.o jpwrite/jcapistd.o jpwrite/jutils.o jpwrite/jcinit.o
-JPWRITE += jpwrite/jcparam.o jpwrite/jdatadst.o jpwrite/jerror.o jpwrite/jcmarker.o
-JPWRITE += jpwrite/jcomapi.o jpwrite/jmemmgr.o jpwrite/jmemnobs.o jpwrite/jcmaster.o
-JPWRITE += jpwrite/jcmainct.o jpwrite/jchuff.o jpwrite/jccoefct.o jpwrite/jcarith.o
-JPWRITE += jpwrite/jfdctfst.o jpwrite/jaricom.o jpwrite/jcprepct.o jpwrite/jccolor.o
-JPWRITE += jpwrite/jcdctmgr.o jpwrite/jfdctint.o jpwrite/jfdctflt.o
-JPWRITE += jpwrite/jcsample.o
-SYSLIBS=zlib/libz.a
+
 SYSLIBS=-Lzlib -lz -lrt -Lssl -lssl -lcrypto
-
-#SYSLIBS=-L/opt/vispro/lib -lVisServ -lVisFunc -lz
-
-#INCLUDES = -I. -Isk -Ifk -Izlib -I/home/vispro/Kernel/download/linux-2.6.33.7.2-rt30/include -Ijpwrite
-#INCLUDES = -I. -Isk -Ifk -Izlib -I/home/vispro/Kernel/download/linux-2.6.33.7.2-rt30/include
 INCLUDES = -I. -Isk -Ifk -Izlib -Issl
-
 
 OBJ2 = u.o listen.o rd2.o write.o $(SKIT) $(FKIT) http.o vinter.o www.o proc.o
 OBJ2+= json.o timer.o base64.o mail.o
 
-
 SingleProgramTarget(lg.srv.unstripped,$(OBJ2) $(LOCAL_LIBRARIES),,$(SYSLIBS))
-SingleProgramTarget(v4linfo,v4linfo.o,,)
 
 all:: lg.srv
 

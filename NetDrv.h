@@ -14,6 +14,7 @@
 #endif
 
 #include <Serv.h>
+#include <stdlib.h>
 #include <linux/if_ether.h>
 #include <time.h>
 
@@ -150,4 +151,34 @@ extern	void	ReadTimerFromFile( void );
 extern	void	RunTimerParam( char *param );
 extern	void	StartTimer( void );
 
+/* mail.c */
+typedef struct _MailVars
+{
+	struct {
+		char	*receiver;
+		char	*gateway;
+		char	*user;
+		char	*pass;
+		int		enable;
+	} send;
+	struct {
+		char	*gateway;
+		char	*user;
+		char	*pass;
+		char	*sign;
+		int		cycle;
+		int		enable;
+	} get;
+	char	*response;
+} MailVars;
+
+extern	void	ReadMailConfigFromFile( void );
+extern	int		sendMail( char *subject, char *text );
+extern	void	NewState( char *stext );
+extern	void	RunMailCfgParam( char *param );
+extern	void	SndMailAddLog( int to_response, char *fmt, ... );
+
+/* base64.c */
+extern	size_t	base64_decode(char *source, unsigned char *target, size_t targetlen);
+extern	int		base64_encode(unsigned char *source, size_t sourcelen, char *target, size_t targetlen);
 #endif

@@ -50,9 +50,10 @@
  * 15.04.2015   2.21   fx2 smtp-password as '***' , enable as checkbox
  * 15.04.2015   2.22   fx2 pop3 function added
  * 17.04.2015   2.23   fx2 suppress bombing same message in log
+ * 27.04.2015   2.24   fx2 fixup sourceforge
 */
 
-char *cstr = "lg.srv, V2.23 compiled 17.04.2015, by fx2";
+char *cstr = "lg.srv, V2.24 compiled 27.04.2015, by fx2";
 
 int	debug = 0;		// increasing debug output (0 to 9)
 
@@ -138,7 +139,7 @@ static	void	_clientData( SkLine *l, int pt, void *own, void *sys )
 	{
 		Log(2," # request too long ! - ignoring (wait for fault)\r\n");
 		noWrongSize++;
-		VskDisconnect( l );
+		skDisconnect( l );
 		return;
 	}
 
@@ -167,14 +168,14 @@ void	_clientConnected( SkLine *cl, int pt, void *own, void *sys )
 	{
 		/* too many clients : disconnect */
 		Log(1,"too many clients - disconnect client\r\n");
-		VskDisconnect( cl );
+		skDisconnect( cl );
 		return;
 	}
 	cl_array[i] = cl;
 
-	VskAddHandler( cl, SK_H_READABLE, _HReadable, 0 );
-	VskAddHandler( cl, SK_H_PACKET, _clientData, 0 );
-	VskAddHandler( cl, SK_H_CLOSE, _clientClose, 0 );
+	skAddHandler( cl, SK_H_READABLE, _HReadable, 0 );
+	skAddHandler( cl, SK_H_PACKET, _clientData, 0 );
+	skAddHandler( cl, SK_H_CLOSE, _clientClose, 0 );
 
 	cl->data = malloc( sizeof(struct _ClientData) );
 	memset(cl->data,0, sizeof(struct _ClientData) );
@@ -287,7 +288,7 @@ int main( int argc, char ** argv )
 
 	jsonSend(0);
 
-	VskMainLoop();
+	skMainLoop();
 
 	return( 0 );
 }
@@ -362,7 +363,7 @@ void	_RestartMe( void )
 	if ( listen_line )
 	{
 		port=listen_line->port;
-		VskDisconnect( listen_line );
+		skDisconnect( listen_line );
 	}
 	listen_line=0;
 

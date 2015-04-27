@@ -172,7 +172,7 @@ static void _sessionAlive( SkTimerType tid, void *own )
 
 	sendJSONPacket(cmd_line, "{\"SESSION\":\"ALIVE\"}" );
 
-	stid=VskAddTimer(2000, _sessionAlive, 0 );
+	stid=skAddTimer(2000, _sessionAlive, 0 );
 }
 
 static	void	_sessionData( SkLine *l, int pt, void *own, void *sys )
@@ -204,10 +204,10 @@ static	void	_sessionData( SkLine *l, int pt, void *own, void *sys )
 		i++;
 	}
 	if ( !stid )
-		stid=VskAddTimer(2000, _sessionAlive, 0 );
+		stid=skAddTimer(2000, _sessionAlive, 0 );
 
 	if(disco)
-		VskDisconnect(l);
+		skDisconnect(l);
 #if 0
 	printf("_sessionData: %d bytes\r\n",pck->len);
 
@@ -237,10 +237,10 @@ static SkLine	*RawConnect( char *service, char *host )
 {
 	SkLine *l[2]={0,0};
 
-	VskAsyConnect( host, service, 500, _asyConn, l );
+	skAsyConnect( host, service, 500, _asyConn, l );
 
 	while( l[0] == 0 )
-		VskTimeoutStep(100);
+		skTimeoutStep(100);
 
 	return l[1];
 }
@@ -280,9 +280,9 @@ static void _establish4002( void )
 		return;
 	session_line=l;
 
-	VskAddHandler( l, SK_H_READABLE, _HReadable, 0 );
-	VskAddHandler( l, SK_H_PACKET, _sessionData, 0 );
-	VskAddHandler( l, SK_H_CLOSE, _sessionClose, 0 );
+	skAddHandler( l, SK_H_READABLE, _HReadable, 0 );
+	skAddHandler( l, SK_H_PACKET, _sessionData, 0 );
+	skAddHandler( l, SK_H_CLOSE, _sessionClose, 0 );
 
 	sendJSONPacket(l, "{\"CONNECT\":\"REQUEST\"}" );
 }
@@ -319,9 +319,9 @@ int	jsonSend( char *command )
 			return -2;
 		cmd_line=l;
 		f1++;
-		VskAddHandler( l, SK_H_READABLE, _HReadable, 0 );
-		VskAddHandler( l, SK_H_PACKET, _clientData, 0 );
-		VskAddHandler( l, SK_H_CLOSE, _clientClose, 0 );
+		skAddHandler( l, SK_H_READABLE, _HReadable, 0 );
+		skAddHandler( l, SK_H_PACKET, _clientData, 0 );
+		skAddHandler( l, SK_H_CLOSE, _clientClose, 0 );
 
 		l->data = malloc(sizeof(JsonData));
 		l->data->f1 = &f1;
@@ -334,7 +334,7 @@ int	jsonSend( char *command )
 	}
 
 	while( f1 && --cnt )
-		VskTimeoutStep(30);
+		skTimeoutStep(30);
 
 	return 0;
 }

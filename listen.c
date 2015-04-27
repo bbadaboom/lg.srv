@@ -15,7 +15,7 @@ static	void	_add_client( SkLine *h, int type, void *own, void *sys )
 {
 	SkLine	*l;
 
-	l = VskAcceptFd( h->fd );
+	l = skAcceptFd( h->fd );
 
 	if ( !l )
 		return;
@@ -24,7 +24,7 @@ static	void	_add_client( SkLine *h, int type, void *own, void *sys )
 	l->other_v = 1;
 
 	if ( l->tid_sendwatch )
-			VskRemoveTimer( l->tid_sendwatch );
+			skRemoveTimer( l->tid_sendwatch );
 	l->tid_sendwatch = 0;
 
 	_clientConnected( l, 0, 0, 0 );
@@ -36,7 +36,7 @@ static	int	__listen( SkLine *h )
 	int					close_on_exec = 1;
 
 	h->fd = socket( AF_INET, SOCK_STREAM, 0 );
-	if ( h->fd == INVALID_SOCKET )
+	if ( h->fd == -1 )
 		return -1;
 
 	insock.sin_family = AF_INET;
@@ -53,19 +53,19 @@ static	int	__listen( SkLine *h )
 
 	if ( bind(h->fd, (struct sockaddr*)&insock, sizeof(insock)) )
 	{
-		closesocket( h->fd );
-		h->fd = INVALID_SOCKET;
+		close( h->fd );
+		h->fd = -1;
 		return( -1 );
 	}
 
 	if ( listen( h->fd, 5 ) )
 	{
-		closesocket( h->fd );
-		h->fd = INVALID_SOCKET;
+		close( h->fd );
+		h->fd = -1;
 		return( -1 );
 	}
 
-	VskAddHandler( h, SK_H_READABLE, _add_client, 0 );
+	skAddHandler( h, SK_H_READABLE, _add_client, 0 );
 
 #if !defined(_WINDOWS) && !defined(_WIN32_WCE)
 	fcntl( h->fd, F_SETFD, &close_on_exec );
@@ -78,15 +78,15 @@ SkLine	*_lgListen( unsigned short port )
 {
 	SkLine				*l;
 
-	l = VskNewLine();
+	l = skNewLine();
 	l->port = port;
 	l->intid = SK_ID_HTTP;
 	l->close = li_close;
 
 	if ( __listen( l ) == -1 )
 	{
-		_VskDelLine( l );
-		_xVskDelLine( l );
+		_skDelLine( l );
+		_xskDelLine( l );
 		l=0;
 	}
 

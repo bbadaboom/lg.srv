@@ -152,6 +152,11 @@ typedef struct _SkHandler
 #define	SK_H_USER1			51
 
 /*
+** SK_IDs
+*/
+#define SK_ID_HTTP			14
+
+/*
 ** Times
 */
 #define READ_SELECT_TIME	5000

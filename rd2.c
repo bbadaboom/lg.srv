@@ -76,7 +76,7 @@ static	int	_fill_cache( SkLine *l, int num )
 			continue;
 		}
 #endif
-		if (( x <= 0 ) || SkTerminate || ( l->fd == -1 ))
+		if (( x <= 0 ) || ( l->fd == -1 ))
 		{
 			/* read-error */
 			close( l->fd );
@@ -98,7 +98,7 @@ static void	_LookPackets( SkLine * l )
 	int				has;
 	SkPacket		pck;
 
-	if (( l->fd == -1 ) || SkTerminate )
+	if ( l->fd == -1 )
 		return;
 
 	p = (unsigned char*)l->in->cache + l->in->ptr;
@@ -112,9 +112,9 @@ static void	_LookPackets( SkLine * l )
 	pck.data = (char*)p;
 	pck.ptype = 0;
 
-	VskDoHandler( l, SK_H_PACKET, &pck );
+	skDoHandler( l, SK_H_PACKET, &pck );
 
-	if (( l->fd == -1 ) || SkTerminate )
+	if ( l->fd == -1 )
 		return;
 
 	l->in->ptr = 0;
@@ -138,7 +138,7 @@ void _HReadable( SkLine *l, int pt, void *own, void *sys )
 
 	if ( x == -1 )
 	{
-		_VskDelLine( l );
+		_skDelLine( l );
 		return;
 	}
 
