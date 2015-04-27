@@ -15,6 +15,7 @@
 
 #include <Serv.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <linux/if_ether.h>
 #include <time.h>
 
