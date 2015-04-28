@@ -262,11 +262,3 @@ int	_SyncLine( SkLine *l )
 
 	return( x );
 }
-
-void	_AsySyncLine( SkLine *l )
-{
-	if ( !l->out )
-		return;
-	while (( l->fd != -1 ) && (l->out->fill > l->out->ptr ))
-		skTimeoutStep(50);
-}

@@ -52,9 +52,10 @@
  * 17.04.2015   2.23   fx2 suppress bombing same message in log
  * 27.04.2015   2.24   fx2 fixup sourceforge
  * 28.04.2015   2.25   fx2 reconnect json if closed by remote
+ * 28.04.2015   2.26   fx2 large file lead to frozen communication
 */
 
-char *cstr = "lg.srv, V2.25 compiled 28.04.2015, by fx2";
+char *cstr = "lg.srv, V2.26 compiled 28.04.2015, by fx2";
 
 int	debug = 0;		// increasing debug output (0 to 9)
 

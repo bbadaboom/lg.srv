@@ -1203,7 +1203,7 @@ static	void	SendFile( SkLine *l, char *fname )
 			_WritePacket(l,(unsigned char*)buff,x);
 			xsum+=x;
 			if ( l->out && ( l->out->fill - l->out->ptr > 100000 ))
-				_AsySyncLine(l);
+				_SyncLine(l);
 			if ( xb < 5000 )
 				break;
 			xb=fread(buff,1,5000,fp);
@@ -1225,7 +1225,9 @@ static	void	SendFile( SkLine *l, char *fname )
 			_WritePacket(l,(unsigned char*)buff,x);
 			xsum+=x;
 			if ( l->out && ( l->out->fill - l->out->ptr > 100000 ))
-				_AsySyncLine(l);
+			{
+				_SyncLine(l);
+			}
 			if ( xb < 5000 )
 				break;
 			xb=__t_read(fd,buff,5000);
@@ -1694,7 +1696,7 @@ static		int		cur_mode=-1;
 			x=xb;
 			_WritePacket(l,(unsigned char*)buff,x);
 			if ( l->out && ( l->out->fill - l->out->ptr > 100000 ))
-				_AsySyncLine(l);
+				_SyncLine(l);
 			if ( xb < 5000 )
 				break;
 			xb=fread(buff,1,5000,fp);
