@@ -57,6 +57,11 @@ printf("\n");
 static	SkLine	*cmd_line=0;
 static	SkLine	*session_line=0;
 
+static	void	_timedJsonConnect( SkTimerType tid, void *own )
+{
+	jsonSend( 0 );
+}
+
 static	void	_clientClose( SkLine *l, int pt, void *own, void *sys )
 {
 	cmd_line=0;
@@ -67,6 +72,7 @@ static	void	_clientClose( SkLine *l, int pt, void *own, void *sys )
 		free( l->data );
 		l->data=0;
 	}
+	skAddTimer(1,_timedJsonConnect,0);
 }
 
 static	void	_sessionClose( SkLine *l, int pt, void *own, void *sys )
