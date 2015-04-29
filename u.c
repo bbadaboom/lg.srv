@@ -53,7 +53,7 @@
  * 27.04.2015   2.24   fx2 fixup sourceforge
  * 28.04.2015   2.25   fx2 reconnect json if closed by remote
  * 28.04.2015   2.26   fx2 large file lead to frozen communication
- * 29.04.2015   2.27   aum (audimax) swithced to advancend maps
+ * 29.04.2015   2.27   aum (audimax) switch to advancend maps
 */
 
 char *cstr = "lg.srv, V2.27 compiled 29.04.2015, by fx2";
