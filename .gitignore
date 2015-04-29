@@ -2,3 +2,5 @@ Makefile*
 *.o
 lg.srv*
 stripped
+ssl
+zlib
