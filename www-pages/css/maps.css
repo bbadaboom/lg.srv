@@ -1,0 +1,100 @@
+#content {
+  position:relative;
+  min-height:1000px;
+}
+ 
+#maplist  {
+  position:absolute;
+  width:175px;
+  height:auto;
+}
+
+#maplist table {
+  border:0;
+  width:170px;
+  margin-left:5px;
+  margin-bottom:10px;
+  border:#000000 solid 1px;
+  background-color:#ffffff;
+  border-radius:4px;
+}
+
+#maplist table th {
+  font-weight:bolder;
+  border-bottom:1px #000000 solid;
+}
+
+#maplist table td {
+  font-weight:bold;
+}
+
+#maplist table td  span {
+  font-size:8pt;
+}
+
+#stopbutton {
+  visibility:hidden;
+}
+
+#drawarea {
+  position:absolute;
+  left:225px;
+  width:auto;
+  height:auto;
+  background-color:#ffffff;
+  border:1px solid #000000;
+  border-radius:4px;
+}
+
+.logitem {
+  border-radius:4px;
+  width:160px;
+  float:left;
+  padding:5px;
+  margin:5px;
+  border:#000000 solid 1px;
+  background-color:#ffffff;
+  font-weight:bold;
+}
+
+.logitem input {
+  margin: 5px auto;
+  float:right;
+}
+
+.logitem span {
+  font-weight:bolder;
+}
+
+.logitem div {
+  float:left;
+}
+
+#legend {
+  list-style:disc;
+  z-index:1;
+  background-color:#cccccc;
+  border:#000000 solid 1px;
+  border-radius:4px;
+  width:122px;
+  position:absolute;
+  left:50px;
+  top:210px;
+  visibility:hidden;
+}
+
+#legend ul {
+  list-style:disc;
+  border-top:#000000 solid 1px;  
+  list-style-position: inside;
+}
+
+#legend ul li {
+  margin-left:5px;
+}
+
+#footer {
+  color:#cccccc;
+  font-size:8pt;
+  text-align:center;
+}
