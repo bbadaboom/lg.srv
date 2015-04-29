@@ -18,3 +18,9 @@ creating www.c from www-pages
 * download tool mltar from 'Files' section of this project
 * now you can run
 $ mltar -z -o www.c www-pages
+
+------------------
+cross compile for bot
+* you need some shared libs and headers (ssl, zlib)
+* you can download from files section
+* extract at top of source
