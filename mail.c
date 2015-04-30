@@ -29,7 +29,7 @@ int sendMail( char *subject, char *text )
 	int				state=1;
 	char			buffer[4096];
 	struct sockaddr_in	insock;
-	char			*ip;
+	char			*ip, *p;
 	char			*domain=0;
 	struct hostent	*he;
 	char			*bptr;
@@ -41,15 +41,28 @@ int sendMail( char *subject, char *text )
 	SSL				*ssl=0;
 	SSL_CTX			*ctx=0;
 	SSL_METHOD		*method=0;
+	char			luser[128];
+	char			*auth_user=luser;
 
 	if ( !mail.send.receiver || !mail.send.gateway ||
 		!mail.send.user || !mail.send.pass )
 			return -1;
 
+	if ( strlen(mail.send.user) > 127 )
+		return -1;
+
+	strcpy(luser,mail.send.user);
+	p=strchr(luser,',');
+	if ( p )
+	{
+		*p=0;
+		auth_user=p+1;
+	}
+
 	if ( !slport )
 		slport=defport;
 
-	domain = strchr(mail.send.user,'@');
+	domain = strchr(luser,'@');
 	if (!domain)
 		return -1;
 
@@ -158,15 +171,12 @@ int sendMail( char *subject, char *text )
 			}
 			break;
 		case 2 :
-			if ( mail.send.user )
+			if ( *buffer == '2' )	/* 250 */
 			{
-				if ( *buffer == '2' )	/* 250 */
-				{
-					SSL_write(ssl,"AUTH LOGIN\r\n",12);
-					state=3;
-				}
-				break;
+				SSL_write(ssl,"AUTH LOGIN\r\n",12);
+				state=3;
 			}
+			break;
 		case 3 :
 			if ( !strncmp(buffer,"334 ",4) )
 			{
@@ -179,7 +189,7 @@ int sendMail( char *subject, char *text )
 				tg[sz]=0;
 				if ( !strcasecmp("Username:",tg) )
 				{
-					if ( !base64_encode((unsigned char*)mail.send.user, strlen(mail.send.user), tg, 512) )
+					if ( !base64_encode((unsigned char*)auth_user, strlen(auth_user), tg, 512) )
 						return -12;
 
 					SSL_write(ssl,tg,strlen(tg));
@@ -202,7 +212,7 @@ int sendMail( char *subject, char *text )
 			}
 			else if ( *buffer == '2' )	/* 250 */
 			{
-				sprintf(buffer,"MAIL FROM:<%s>\r\n",mail.send.user);
+				sprintf(buffer,"MAIL FROM:<%s>\r\n",luser);
 				SSL_write(ssl,buffer,strlen(buffer));
 				state=4;
 			}
@@ -233,7 +243,7 @@ int sendMail( char *subject, char *text )
 				int		len;
 
 				sprintf(buffer,"From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n",
-					mail.send.user,mail.send.receiver,subject);
+					luser,mail.send.receiver,subject);
 				SSL_write(ssl,buffer,strlen(buffer));
 				len=strlen(text);
 				SSL_write(ssl,text,len);
@@ -468,9 +478,6 @@ static	int getMail( int bg  )
 	if ( !mail.get.sign || !mail.get.gateway ||
 		!mail.get.user || !mail.get.pass )
 			return -1;
-
-	if ( !strchr(mail.get.user,'@') )
-		return -1;
 
 	if ( !gport )
 		gport=defport;
