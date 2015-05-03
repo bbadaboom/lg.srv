@@ -1,4 +1,4 @@
-// we need some vars
+// we need a some vars
 
 var intervalpointer; 
 var scale = 5;  
@@ -51,12 +51,6 @@ var TO_RADIANS = Math.PI/180;
         stoptimer();
         starttimer();
       }
-     });   
-     
-     $('#showlegend').hover(function() {     	 
-	   $('#legend').css({"visibility":"visible"});
-     }, function() {
-	   $('#legend').css({"visibility":"hidden"});
      });  
       
      $('#scale').bind('keyup mouseup', function() {     	
@@ -103,20 +97,32 @@ function getfiletoprint( fname, canvname, scale )
   var xhr = new XMLHttpRequest();
   xhr.open('GET', '/.../usr/data/blackbox/'+fname, true );
   
-  //xhr.open('GET', fname, true );
+  // Open as blob!
+  xhr.responseType = "blob";
 
   // Hack to pass bytes through unprocessed.
   xhr.overrideMimeType('text/plain; charset=x-user-defined');
 
-  xhr.onreadystatechange = function(e)
-  {
-    if (this.readyState == 4 && this.status == 200)
-    {
-      printmap(this.responseText,fname,canvname,scale);
-    }
-  };
+  xhr.onload = function(oEvent) {
+  var blob = xhr.response;
+  // ...
+  
+  reader = new FileReader();
+	// Blob reader
+	reader.readAsBinaryString(blob);
+	
+	// Closure to capture the file information.
+      reader.onloadend = (function(theFile) {
+	  
+		printmap(reader.result,fname,canvname,scale);
+	  });
+ };
 
-  xhr.send();
+
+xhr.send();
+  
+ }
+
 
   function printmap(texte,fname,canvname,scale)
   {
@@ -192,7 +198,7 @@ function getfiletoprint( fname, canvname, scale )
     ctx.lineWidth = 0;
 
   }
-}
+
 
 
 /*##############################
