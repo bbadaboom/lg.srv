@@ -62,6 +62,12 @@ var TO_RADIANS = Math.PI/180;
            drawmap(lastid);         
          }
        }
+     });   
+     
+     $('#showlegend').hover(function() {  
+        $('#legend').css({"visibility":"visible"});
+     }, function() { 
+        $('#legend').css({"visibility":"hidden"});
      });  
           
      scale = Number($('#scale').val());
@@ -335,16 +341,19 @@ function getspeed() {
 								 cords=true;
 								 break;								
 							  case 'EventPose':
-								 color ="#0000FF";					
+								 color ="#0000FF";				
 								 break;																
 							  case 'TrapStateEnds':
-								 color ="#00FFFF";					
+								 color ="#00FFFF";
+								 cords=true;					
 								 break;
 							  case 'TrapStateStarts':
-							  	 color ="#FF00FF";					
+							  	 color ="#FF00FF";
+								 cords=true;					
 							  break;																
 							  case 'CoveredMap':
-								 color ="#AAAAAA";					
+								 color ="#AAAAAA";
+								 cords=true;					
 							  break;																
 						  }
 						
