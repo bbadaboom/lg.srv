@@ -55,9 +55,10 @@
  * 28.04.2015   2.26   fx2 large file lead to frozen communication
  * 29.04.2015   2.27   aum (audimax) switch to advancend maps
  * 30.04.2015   2.28   fx2 accept additional user in smtp : 'from[,user]'
+ * 04.05.2015   2.29   aum runtime fixes maps.html 
 */
 
-char *cstr = "lg.srv, V2.28 compiled 30.04.2015, by fx2";
+char *cstr = "lg.srv, V2.29 compiled 04.05.2015, by fx2";
 
 int	debug = 0;		// increasing debug output (0 to 9)
 
