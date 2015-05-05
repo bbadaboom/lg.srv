@@ -12,10 +12,14 @@
 		<script>	
 	     var blkfiles = ['${BLKFILE:0}', '${BLKFILE:1}', '${BLKFILE:2}', '${BLKFILE:3}', '${BLKFILE:4}', '${BLKFILE:5}', '${BLKFILE:6}', '${BLKFILE:7}', '${BLKFILE:8}', '${BLKFILE:9}', '${BLKFILE:9}'];
         var bblfiles = ['${BBLFILE:0}', '${BBLFILE:1}', '${BBLFILE:2}', '${BBLFILE:3}', '${BBLFILE:4}', '${BBLFILE:5}', '${BBLFILE:6}', '${BBLFILE:7}', '${BBLFILE:8}', '${BBLFILE:9}', '${BBLFILE:9}'];
-        
-        //for local test
-        //var blkfiles = ['MAPDATA20150415110417_591483_40.blk','MAPDATA20150412231854_021325_39.blk'];
-        //var bblfiles = ['cleanlog20150415100015_U_40.bbl','cleanlog20150412231842_U_39.bbl'];
+        var debug = false;
+ 
+        //Check if we are running on bot or not
+        if(blkfiles[0].substr(7,4) != '2015') debug = true;
+        if(debug) {
+          var blkfiles = ['MAPDATA20150415110417_591483_40.blk','MAPDATA20150412231854_021325_39.blk','MAPDATA20150502141140_789728_41.blk'];
+          var bblfiles = ['cleanlog20150415100015_U_40.bbl','cleanlog20150412231842_U_39.bbl','cleanlog20150502124351_U_41.bbl'];        
+        }
 	     
 	     function printstate() {
 	     	  $('#drawdata').html(drawcounter);
@@ -60,16 +64,16 @@
 				<div id="maplist">
 				    <table>
 				      <tr>
-                    <th colspan="2">Options</th>				      
+                    <th colspan="2">Options<img src="../images/loader.gif" width="" height="" alt="working..." /></th>				      
 				      </tr>
 				      <tr>
 				        <td>scale <span>(s/d)</span>:</td><td><input type="number" id="scale" min="1" max="15" value="5" style="width:30px;" /></td>
 				      </tr>
 				      <tr>
-				        <td>frequency <span>(d)</span>:</td><td><input type="number" id="drawingspeed" min="1" max="15" value="5" style="width:30px;" /></td>
+				        <td>frequency <span>(d)</span>:</td><td><input type="number" id="drawingspeed" min="1" max="30" value="5" style="width:30px;" /></td>
 				      </tr>
 				      <tr id="showlegend">
-				        <td>color <span>(d)</span>:</td><td><input type="checkbox" id="colorcode" checked /></td>
+				        <td>draw <span>(d)</span>:</td><td><select id="drawperf" name="drawpref" style="width:60px;"><option value="2" selected>both</option><option value="1">bot</option><option value="0">dot</option></select></td>
 				      </tr>
 				      <tr id="stopbutton">
 				        <td>stop <span>(d)</span>:</td><td><input type="image" width="16px" height="16px" src="../images/delete.png" onclick="javascript: stopdrawing();" /></td>

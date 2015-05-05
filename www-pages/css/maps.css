@@ -24,6 +24,13 @@
   border-bottom:1px #000000 solid;
 }
 
+#maplist table th img { 
+  float:right;
+  margin-right:5px;
+  margin-top:3px;
+  visibility:hidden;
+}
+
 #maplist table td {
   font-weight:bold;
 }
