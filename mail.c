@@ -23,7 +23,7 @@ extern	MailVars		mail;
 static	unsigned short	slport=0;
 static	unsigned short	gport=0;
 
-int sendMail( char *subject, char *text )
+static int _sendMail2Recv( char *subject, char *text, char *receiver )
 {
 	int				fd;
 	int				state=1;
@@ -44,9 +44,11 @@ int sendMail( char *subject, char *text )
 	char			luser[128];
 	char			*auth_user=luser;
 
-	if ( !mail.send.receiver || !mail.send.gateway ||
+	if ( !receiver || !mail.send.gateway ||
 		!mail.send.user || !mail.send.pass )
 			return -1;
+
+	Log(2,"sendMail: try send to %s\r\n",receiver);
 
 	if ( strlen(mail.send.user) > 127 )
 		return -1;
@@ -153,6 +155,8 @@ int sendMail( char *subject, char *text )
 		if ( *buffer == '5' )	/* 5xx */
 		{
 			Log(2,"sendMail: request not accepted [%d] (%s)\r\n",state,buffer);
+			close(fd);
+			SSL_free(ssl);
 			return -10;
 		}
 
@@ -185,12 +189,20 @@ int sendMail( char *subject, char *text )
 
 				sz=base64_decode(buffer+4, (unsigned char*)tg, 512);
 				if ( !sz )
+				{
+					close(fd);
+					SSL_free(ssl);
 					return -11;
+				}
 				tg[sz]=0;
 				if ( !strcasecmp("Username:",tg) )
 				{
 					if ( !base64_encode((unsigned char*)auth_user, strlen(auth_user), tg, 512) )
+					{
+						close(fd);
+						SSL_free(ssl);
 						return -12;
+					}
 
 					SSL_write(ssl,tg,strlen(tg));
 					SSL_write(ssl,"\r\n",2);
@@ -199,7 +211,11 @@ int sendMail( char *subject, char *text )
 				else if ( !strcasecmp("Password:",tg) )
 				{
 					if ( !base64_encode((unsigned char*)mail.send.pass, strlen(mail.send.pass), tg, 512) )
+					{
+						close(fd);
+						SSL_free(ssl);
 						return -13;
+					}
 
 					SSL_write(ssl,tg,strlen(tg));
 					SSL_write(ssl,"\r\n",2);
@@ -219,13 +235,15 @@ int sendMail( char *subject, char *text )
 			else
 			{
 				Log(2,"sendMail: unknown auth-response :%s\r\n",buffer);
+				close(fd);
+				SSL_free(ssl);
 				return -14;
 			}
 			break;
 		case 4 :
 			if ( *buffer == '2' )	/* 250 */
 			{
-				sprintf(buffer,"RCPT TO:<%s>\r\n",mail.send.receiver);
+				sprintf(buffer,"RCPT TO:<%s>\r\n",receiver);
 				SSL_write(ssl,buffer,strlen(buffer));
 				state=5;
 			}
@@ -243,7 +261,7 @@ int sendMail( char *subject, char *text )
 				int		len;
 
 				sprintf(buffer,"From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n",
-					luser,mail.send.receiver,subject);
+					luser,receiver,subject);
 				SSL_write(ssl,buffer,strlen(buffer));
 				len=strlen(text);
 				SSL_write(ssl,text,len);
@@ -265,6 +283,30 @@ int sendMail( char *subject, char *text )
 		}
 	}
 	return( 0 );
+}
+
+int sendMail( char *subject, char *text )
+{
+	char	*p, *receiver, *too;
+	int		rc=0;
+
+	if ( !mail.send.receiver || !strchr(mail.send.receiver,'@') )
+		return -1;
+
+	receiver=strdup(mail.send.receiver);
+	for( too=receiver, p=strchr(too,','); p; )
+	{
+		*p=0;
+		rc=_sendMail2Recv( subject, text, too );
+		if ( rc != 0 )
+			break;
+		too=p+1;
+		p=strchr(too,',');
+	}
+	if ( rc == 0 )
+		rc=_sendMail2Recv( subject, text, too );
+	free(receiver);
+	return rc;
 }
 
 #define MAXLEN	2048
