@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+	<head>
+		<title>${JSON:NICKNAME}'s Control Center</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="../favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		<link rel="stylesheet" href="../javascript/css/jquery-ui.css" />
+		<link rel="stylesheet" type="text/css" href="../css/xmledit.css" />
+		<script type="text/javascript" src="../javascript/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="../javascript/jquery-ui-1.10.4.min.js"></script>
+		<script type="text/javascript" src="../javascript/functions.js"></script>
+		<script type="text/javascript" src="../javascript/xmledit.js"></script>
+		<script type="text/javascript">
+		   var nickname = '${JSON:NICKNAME}';		
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+				<div id="title">
+					<a href="../index.html">
+						<span>${JSON:NICKNAME}'s</span><br />
+						Control Center
+					</a>
+				</div>
+				<div id="datetime"></div>
+				<div id="navigation">
+					<ul>
+						<li><a class="link" href="../index.html">Home</a></li>
+						<li><a class="link" href="schedule.html">Schedule</a></li>
+						<li><a class="link" href="information.html">Information</a></li>
+						<li><a class="link" href="statistic.html">Statistic</a></li>
+						<li><a class="link" href="maps.html">Maps</a></li>
+						<li><a class="active" href="service.html">Service</a></li>
+						<li><a class="link" href="mailcfg.html">Mail</a></li>
+					</ul>
+				</div>
+			</div>
+			<div id="content" style="visibility:hidden">	
+				<h2>Edit XML Files</h2>
+				<div id="response"></div>
+				<div id="editmenu">
+				<img style="float:right;" id="loader" src="../images/loader.gif" height="16" width="16" alt="loading" />
+				<div id="fileselector">Choose file to edit: <input type="button" class="xmlfile" name="xmlfile" value="Motion.xml" /> <input type="button" class="xmlfile" name="xmlfile" value="Navi.xml" /></div>
+            <div id="menubuttons"><input type="button" id="savexml" value="Save file" /><input type="button" id="resetvalues" value="Reset Values" /><input type="button" id="defaultvalues" value="Default Values" /></div></div>
+				
+					
+								
+				<div id="editor">							
+				<table id="xmlparams">
+				  
+				</table>	
+				</div>
+	
+			</div>
+			<div class="clear"></div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<LGRP version="1.0" xmlns="http://www.dmg.org/PMML-3-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema_instance">
+  <Header xmlns="" copyright="LG Electronics">
+    The LGRP for HIT.
+    <Application name="lgrp" version="0.9 beta"/>
+  </Header>
+
+  <parameterTable>
+    <parameter name="TURN_DISTANCE_WALL_VALUE" value="105" />
+    <parameter name="TURN_DISTANCE_OBSTACLE_VALUE" value="115" />
+    <parameter name="TURN_DISTANCE_OBSTACLEONONEDIRECTION_VALUE" value="120" />
+    <parameter name="WF_DISTANCE_VALUE" value="18" />
+    <parameter name="WALLAPPROACHING_DISTANCE_VALUE" value="67" />
+    <parameter name="CORNERAPPROACHING_DISTANCE_VALUE" value="65" />
+    <parameter name="SPEEDREDUCTION_DISTANCE_VALUE" value="180" />
+    <parameter name="MAX_TACC_VALUE" value="900.0" />
+    <parameter name="MAX_RACC_VALUE" value="360.0" />
+    <parameter name="JOY_STOP_DISTANCE_USSOBSTACLE1_VALUE" value="85" />
+    <parameter name="JOY_STOP_DISTANCE_USSOBSTACLE2_VALUE" value="90" />
+    <parameter name="JOY_STOP_DISTANCE_USSOBSTACLE3_VALUE" value="95" />
+    <parameter name="JOY_STOP_DISTANCE_PSDOBSTACLE_VALUE" value="40" />
+    <parameter name="JOY_SPEEDREDUCTION_DISTANCE_VALUE" value="200" />
+    <parameter name="MOVE_FORWARD_SPEEDREDUCTION_RATE_VALUE" value="3" />
+    <parameter name="JOY_TIME_MS_BACKMOVING_VALUE" value="1000" />
+    <parameter name="WHEELSPEED_TESTMODE1" value="300" />
+    <parameter name="WHEELSPEED_TESTMODE2" value="350" />
+    <parameter name="WHEELSPEED_DOORSILLMOTION" value="250" />
+    <parameter name="MOTORERRORMOTION_SPEED" value="120" />
+    <parameter name="MOTORERRORMOTION_TIME_SEC" value="2" />
+    <parameter name="WALLAREA_ESC_DECISION_DIST" value="100" />
+    <parameter name="NARROW_AREA_SONAR_BUMPING" value="80" />
+    <parameter name="NARROW_AREA_SONAR_MARGIN" value="80" />
+    <parameter name="NARROW_AREA_SONAR_LEFT" value="80" />
+    <parameter name="NARROW_AREA_SONAR_RIGHT" value="80" />
+    <parameter name="NARROW_AREA_PSD" value="20" />
+    <parameter name="CARPET_TURN_DISTANCE_LEVEL" value="1" />
+    
+  </parameterTable>
+
+</LGRP>

@@ -184,7 +184,7 @@ static	void	WriteFile( SkLine *l, char *fname )
 		WriteSimpleHttp(l,"\n");
 	}
 	fclose(in);
-	WriteSimpleHttp(l,"</code></pre><BR>\n");
+	WriteSimpleHttp(l,"</code></pre><br>\n");
 }
 
 static	void	SendDownloadMaps( SkLine *l )
@@ -510,6 +510,7 @@ static	int	DoActivate( SkLine *l, char *param )
 	char	from[1024];
 	int		failed=0;
 	int		rc=0;
+	int		reboot=0;
 
 	sprintf(from,DESTPATH "/%s",param);
 
@@ -595,6 +596,7 @@ static	int	DoActivate( SkLine *l, char *param )
 	}
 	else if ( strstr(param,"Motion.xml") )
 	{
+		reboot++;
 		char	*to="/usr/rcfg/Motion.xml";
 		rename(to,"/usr/rcfg/Motion.svd");
 		if ( movefile( from, to ) )
@@ -610,6 +612,7 @@ static	int	DoActivate( SkLine *l, char *param )
 	}
 	else if ( strstr(param,"Navi.xml") )
 	{
+		reboot++;
 		char	*to="/usr/rcfg/Navi.xml";
 		rename(to,"/usr/rcfg/Navi.svd");
 		if ( movefile( from, to ) )
@@ -624,11 +627,15 @@ static	int	DoActivate( SkLine *l, char *param )
 		}
 	}
 
-	if ( failed )
+	if ( failed ) {
 		WriteSimpleHttp( l, hdr_response "<H3>Installation failed</H3>" );
-	else
-		WriteSimpleHttp( l, hdr_response "<H3>Installation successful</H3>" );
-
+	} else {
+		if (reboot) {
+		   WriteSimpleHttp( l, hdr_response "<H3>Installation successful</H3><br />You just uploaded a xml configuration file. <br />The file was copied to the correct location but your Hombot will only act to the new configuration after you reboot your system:<br /><input type=\"button\" id=\"reboot\" value=\"Reboot System\" />" );
+      } else {
+		   WriteSimpleHttp( l, hdr_response "<H3>Installation successful</H3><input type=\"button\" id=\"refresh\" value=\"Reload Page\" />" );
+		}
+   }
 	return rc;
 }
 
@@ -1012,7 +1019,7 @@ static	void	SendFile( SkLine *l, char *fname )
 	p=strchr(fname,' ');
 	if ( !p )
 	{
-		WriteSimpleHttp( l, hdr "<body>unknown REQUEST!<BR>" );
+		WriteSimpleHttp( l, hdr "<body>unknown REQUEST!<br />" );
 		WriteSimpleHttp( l, "SendFile(%s)",fname );
 		WriteSimpleHttp( l, "</body></html>");
 		skCloseAtEmpty(l);
@@ -1028,7 +1035,7 @@ static	void	SendFile( SkLine *l, char *fname )
 		if ( !fp )
 		{
 //printf("file not found : %s\n",fname);
-			WriteSimpleHttp( l, hdr "<body>file not found : 401<BR>" );
+			WriteSimpleHttp( l, hdr "<body>file not found : 401<br />" );
 			WriteSimpleHttp( l, "</body></html>");
 			skCloseAtEmpty(l);
 			num_open--;
@@ -1088,7 +1095,7 @@ static	void	SendFile( SkLine *l, char *fname )
 			fd=__t_open( fname );
 			if ( fd == -1 )
 			{
-				WriteSimpleHttp( l, hdr "<body>file not found : 401<BR>" );
+				WriteSimpleHttp( l, hdr "<body>file not found : 401<br />" );
 				WriteSimpleHttp( l, "</body></html>");
 				skCloseAtEmpty(l);
 				num_open--;
@@ -1516,6 +1523,17 @@ void	HttpPck( SkLine *l, int pt, void *own, void *sys )
 		system(buff);
 		return;
 	}
+	else if ( !strncmp(data,"GET /reboot?",12) )
+	{
+		char	buff[0124];
+
+		strcpy(buff,"reboot");
+		WriteSimpleHttp( l, hdr "<b>reboot of hombot inititiated, please wait ...</b>");
+		skCloseAtEmpty(l);
+
+		system(buff);
+		return;
+	}
 	else if ( !strncmp(data,"GET /json.cgi?",14) )
 	{
 		int				rc;
@@ -1605,7 +1623,7 @@ static		int		cur_mode=-1;
 		unsigned int	b;
 		int				f=0;
 
-		for( p=data+25, q=locdata; *p; f++, p++, q++ )
+		for( p=data+24, q=locdata; *p; f++, p++, q++ )
 		{
 			if ( f == 510 )
 				break;

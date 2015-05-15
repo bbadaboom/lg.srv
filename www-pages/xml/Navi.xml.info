@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<LGRP version="1.0" xmlns="http://www.dmg.org/PMML-3-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema_instance">
+  <Header xmlns="" copyright="LG Electronics">
+    The LGRP for HIT.
+    <Application name="lgrp" version="0.9 beta"/>
+  </Header>
+
+  <parameterTable>
+    <parameter name="NAVI_ROBOT_RADIUS" value="160" />
+    <parameter name="NAVI_PSD_MAPPING_DISTANCE" value="70" />
+    <parameter name="NAVI_PSD_ANGLE" value="52" />
+    <parameter name="NAVI_PSD_POSE_X" value="120" />
+    <parameter name="NAVI_PSD_POSE_Y" value="135" />
+    <parameter name="NAVI_USS_MAPPING_DISTANCE" value="120" />
+    <parameter name="NAVI_USS_POSE_X" value="160" />
+    <parameter name="NAVI_USS_POSE_Y" value="120" />
+    <parameter name="NAVI_CLIFF_LR_POSE_X" value="90" />
+    <parameter name="NAVI_CLIFF_LR_POSE_Y" value="150" />
+    <parameter name="NAVI_CLIFF_C_POSE_X" value="150" />
+    <parameter name="NAVI_CLIFF_C_POSE_Y" value="0" />
+    <parameter name="NAVI_ZZ_VELOCITY" value="350" />
+    <parameter name="NAVI_DIAGNOSIS_USS_CRITERIA" value="200" />
+    <parameter name="NAVI_DIAGNOSIS_USS_COUNT" value="15" />
+    <parameter name="NAVI_DIAGNOSIS_CLIFF_CRITERIA" value="35" />
+    <parameter name="NAVI_DIAGNOSIS_CLIFF_OFFSET" value="30" />
+    <parameter name="NAVI_DIAGNOSIS_CLIFF_COUNT" value="15" />
+    <parameter name="NAVI_DIAGNOSIS_OFS_CRITERIA" value="0" />
+    <parameter name="NAVI_DIAGNOSIS_XACC_CRITERIA" value="0" />
+    <parameter name="NAVI_DIAGNOSIS_YACC_CRITERIA" value="8500" />
+    <parameter name="NAVI_DIAGNOSIS_ZACC_CRITERIA" value="9800" />
+    <parameter name="NAVI_DIAGNOSIS_XACC_OFFSET" value="1500" />
+    <parameter name="NAVI_DIAGNOSIS_YACC_OFFSET" value="1500" />
+    <parameter name="NAVI_DIAGNOSIS_ZACC_OFFSET" value="1500" />
+    <parameter name="NAVI_DIAGNOSIS_PSD_CRITERIA" value="100" />
+    <parameter name="NAVI_DIAGNOSIS_PSD_COUNT" value="15" />
+    <parameter name="NAVI_DIAGNOSIS_AGITATOR_CRITERIA" value="1000" />
+    <parameter name="NAVI_DIAGNOSIS_AGITATOR_OFFSET" value="500" />
+    <parameter name="NAVI_DIAGNOSIS_SUCTION_CRITERIA" value="400" />
+    <parameter name="NAVI_DIAGNOSIS_SUCTION_OFFSET" value="200" />
+    <parameter name="NAVI_DIAGNOSIS_WHEELCURRENT_CRITERIA" value="1000" />
+    <parameter name="NAVI_DIAGNOSIS_GYRO_OFFSET" value="30" />
+	<parameter name="NAVI_SEARCHING_WF_DISTANCE" value="18" />
+  </parameterTable>
+
+</LGRP>

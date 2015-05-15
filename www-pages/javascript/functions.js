@@ -88,6 +88,22 @@ $(document).ready(function() {
 							url: "/activate?" + filename,
 							success:function( htmldata ) {
 								$('#response').html( htmldata );
+					         			
+								$('#refresh').bind( "click", function() {
+								   location.reload();					  
+					         });
+								
+	                     $('#reboot').bind("click", function() {		
+	                        if(confirm("You are about to reboot " + nickname + "'s system. Are you sure?")) {
+		                     	$.ajax({ url: "/reboot?",
+			                        success:function( htmldata ) {
+					         			$('#response').html( htmldata );
+					         			setTimeout(function(){
+					         				document.location.href='/';
+					         			}, 30000);
+					               } });	     
+	                        }
+	                     });
 							}
 						});
 					});

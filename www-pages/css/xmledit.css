@@ -1,0 +1,49 @@
+#editmenu {
+  border:#000000 solid 1px;
+  background-color:#ffffff;
+  border-radius:4px;
+  padding:10px;
+  margin: 10px auto;
+}
+
+#response {
+  border:#000000 solid 1px;
+  background-color:#ffffff;
+  border-radius:4px;
+  padding:10px;
+  margin: 10px auto;
+}
+
+#editor {
+  border:#000000 solid 1px;
+  background-color:#ffffff;
+  border-radius:4px;
+  padding:10px;
+  margin: 10px auto;
+}
+
+#editmenu input {
+  margin: 10px 50px;
+}
+
+#xmlparams {
+  background-color:#000000;
+  margin: 0 auto;
+}
+
+#xmlparams td, #xmlparams th {
+  background-color:#ffffff;
+  padding: 3px 10px;
+  font-size:10pt;
+  font-weight:bold;
+}
+
+#xmlparams th {
+  font-size:15pt;
+  font-weight:bold;
+}
+
+.defaultval {
+  font-size:8pt;
+  font-weight:bold;
+}
