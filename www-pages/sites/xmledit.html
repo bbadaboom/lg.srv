@@ -12,7 +12,17 @@
 		<script type="text/javascript" src="../javascript/functions.js"></script>
 		<script type="text/javascript" src="../javascript/xmledit.js"></script>
 		<script type="text/javascript">
-		   var nickname = '${JSON:NICKNAME}';		
+		  var blkfile = '${BLKFILE:0}';
+		  var debug=false;
+		   
+        //Check if we are running on bot or not
+        if(blkfile.length <= 15 ) debug = true;
+        if(debug) {
+           xmlpath='';
+           xmlinfopath='';               
+        }
+        
+		  var nickname = '${JSON:NICKNAME}';		
 		</script>
 	</head>
 	<body>
@@ -42,7 +52,7 @@
 				<div id="response"></div>
 				<div id="editmenu">
 				<img style="float:right;" id="loader" src="../images/loader.gif" height="16" width="16" alt="loading" />
-				<div id="fileselector">Choose file to edit: <input type="button" class="xmlfile" name="xmlfile" value="Motion.xml" /> <input type="button" class="xmlfile" name="xmlfile" value="Navi.xml" /></div>
+				<div id="fileselector">Choose file to edit: <input type="button" class="xmlfile" name="xmlfile" value="Motion.xml" /> <input type="button" class="xmlfile" name="xmlfile" value="Navi.xml" /><input type="button" class="xmlfile" name="xmlfile" value="App.xml" /> </div>
             <div id="menubuttons"><input type="button" id="savexml" value="Save file" /><input type="button" id="resetvalues" value="Reset Values" /><input type="button" id="defaultvalues" value="Default Values" /></div></div>
 				
 					

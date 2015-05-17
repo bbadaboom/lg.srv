@@ -1,14 +1,9 @@
 var editing=false;
-var xmlpath='/.../usr/rcfg/';
-var xmlinfopath='/xml/';
+var xmlpath='../.../usr/rcfg/';
+var xmlinfopath='../xml/';
 var xmlfilename;
 var xmlorg;
 var xmlinfo;
-
-//debug
-//xmlpath='';
-//xmlinfopath='';
-
 
 function loadxmlfile (xmlfilename) {
    return $.ajax({
@@ -20,7 +15,7 @@ function loadxmlfile (xmlfilename) {
          loadxmlinfo (xmlfilename);
       },
       error: function (xhr, ajaxOptions, thrownError) {
-        alert('xml file not found on ' + nickname);
+        alert('xml file not found on ' + nickname + '\ntried to access file:' + xmlpath + xmlfilename +'\nthe error was: ' + thrownError);
         reset();  
       }             
    });
@@ -35,8 +30,8 @@ function loadxmlinfo (xmlfilename) {
          xmlinfo = xml2;
          parsexml();
       },
-      error: function (xml) {  
-         alert('default xml file not found on ' + nickname);
+      error: function (xhr, ajaxOptions, thrownError) {  
+         alert('default xml file not found on ' + nickname + '\ntried to access file:' + xmlinfopath + xmlfilename + '.info' +'\nthe error was: ' + thrownError);
          reset();
       }
   });
@@ -82,7 +77,7 @@ $(function() {
 								
 	         $('#defaultvalues').unbind("click");
 	         $('#defaultvalues').bind( "click", function() {
-	         	if(confirm('This will reset the values to default. Continue?')) {
+	         	if(confirm('This will reset all values to default. Continue?')) {
 	         		setdefault();
                   parsexml();	
                }         	
@@ -116,7 +111,7 @@ $(function() {
 		// send form to webserver
       var request = new XMLHttpRequest();
       request.onreadystatechange = function() {
-      if (request.readyState == 4) {
+      if (request.readyState == 4 && this.status == 200) {
          //var newwindow = window.open(xmlfilename+'.upload', 'xmlfile');
          $('#response').append(request.responseText);
          if( $('#install').length > 0 && xmlfilename != "" ) {
@@ -145,6 +140,8 @@ $(function() {
 						});
 					});
 				}
+        } else if (request.readyState == 4 && this.status != 200) {
+          alert('Failed to save file\nResponse:' + request.statusText + ' ' + request.responseText);
         }
      }
       
@@ -180,7 +177,7 @@ function parsexml() {
    
    $('#xmlparams').empty();  
    
-   $('#xmlparams').append("<tr><th colspan=\"3\">Edit Values of "+xmlfilename+"<br />Parameters:</th></tr>");
+   $('#xmlparams').append("<tr><th colspan=\"3\">Edit Values of \""+xmlfilename+"\"</th></tr>");
    $(xmlorg).find('parameter').each(function(){
   
       item = $(this).attr('name');
@@ -189,7 +186,7 @@ function parsexml() {
       //valdesc = $(xmlinfo).find('[name='+$(this).attr('name')+']').attr('description');
       if(!valdesc) valdesc = '';
     	
-      $('#xmlparams').append('<tr><td>' + item + ':</td><td><input type="test" id="' + item + '" value="' + val + '" style="width:50px;text-align:right;" /></td><td class="defaultval">(default: ' + defaultval + ')</td></tr>');
+      $('#xmlparams').append('<tr><td>' + item + ':</td><td><input type="test" id="' + item + '" value="' + val + '" style="width:120px;text-align:right;" /></td><td class="defaultval">(default: ' + defaultval + ')</td></tr>');
       
    });
   
