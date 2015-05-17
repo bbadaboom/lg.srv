@@ -403,7 +403,7 @@ static	void	SendUploaded( SkLine *l )
 	char	buff[512];
 	int		wrong=1;
 
-	WriteSimpleHttp( l, hdr_response "<H3>Upload finished</H3>" );
+	WriteSimpleHttp( l, hdr_response "<h3>Upload finished</h3>" );
 	p=l->data->filename + DESTLEN ;	/* behind /tmp/ */
 
 	if (!strncmp(p,"lg.srv",6))
@@ -420,8 +420,8 @@ static	void	SendUploaded( SkLine *l )
 			pclose(fp);
 			if ( strlen(buff) && strstr(buff,"lg.srv") )
 			{
-				WriteSimpleHttp(l,"<span id=\"fname\">%s</span> was uploaded.<br>",p);
-				WriteSimpleHttp(l,"New software detected : %s<BR>",buff);
+				WriteSimpleHttp(l,"<span id=\"fname\">%s</span> was uploaded.<br />",p);
+				WriteSimpleHttp(l,"New software detected : %s<br />",buff);
 				WriteSimpleHttp(l,"<input type=\"button\" id=\"install\" value=\"Install\"/>");
 				wrong=0;
 			}
@@ -451,6 +451,7 @@ static	void	SendUploaded( SkLine *l )
 	else if (!strncmp(p,"status.html",11) ||
 			!strncmp(p,"Motion.xml",10) ||
 			!strncmp(p,"Navi.xml",8) ||
+			!strncmp(p,"App.xml",7) ||
 			!strncmp(p,"status.txt",10) ||
 			!strncmp(p,"mail.cfg",8))
 	{
@@ -465,12 +466,12 @@ static	void	SendUploaded( SkLine *l )
 
 static	void	SendUploadFail( SkLine *l )
 {
-	WriteSimpleHttp( l, hdr_response "<H3>Upload FAILED !</H3>" );
+	WriteSimpleHttp( l, hdr_response "<h3>Upload FAILED !</h3>" );
 }
 
 static	void	SendNoPage( SkLine *l )
 {
-	WriteSimpleHttp( l, hdr "<body>unknown REQUEST!<BR>" );
+	WriteSimpleHttp( l, hdr "<html><body>unknown REQUEST!</body></html>" );
 }
 
 static	int	movefile( char *from, char *to )
@@ -626,14 +627,30 @@ static	int	DoActivate( SkLine *l, char *param )
 			unlink("/usr/rcfg/Navi.svd");
 		}
 	}
+	else if ( strstr(param,"App.xml") )
+	{
+		reboot++;
+		char	*to="/usr/rcfg/App.xml";
+		rename(to,"/usr/rcfg/App.svd");
+		if ( movefile( from, to ) )
+		{
+			failed++;
+			rename("/usr/rcfg/App.svd",to);
+			unlink(from);
+		}
+		else
+		{
+			unlink("/usr/rcfg/App.svd");
+		}
+	}
 
 	if ( failed ) {
-		WriteSimpleHttp( l, hdr_response "<H3>Installation failed</H3>" );
+		WriteSimpleHttp( l, hdr_response "<h3>Installation failed</h3>" );
 	} else {
 		if (reboot) {
-		   WriteSimpleHttp( l, hdr_response "<H3>Installation successful</H3><br />You just uploaded a xml configuration file. <br />The file was copied to the correct location but your Hombot will only act to the new configuration after you reboot your system:<br /><input type=\"button\" id=\"reboot\" value=\"Reboot System\" />" );
+		   WriteSimpleHttp( l, hdr_response "<h3>Installation successful</h3><br />You just uploaded a xml configuration file. <br />The file was copied to the correct location but your Hombot will only act to the new configuration after you reboot your system:<br /><input type=\"button\" id=\"reboot\" value=\"Reboot System\" />" );
       } else {
-		   WriteSimpleHttp( l, hdr_response "<H3>Installation successful</H3><input type=\"button\" id=\"refresh\" value=\"Reload Page\" />" );
+		   WriteSimpleHttp( l, hdr_response "<h3>Installation successful</h3><input type=\"button\" id=\"refresh\" value=\"Reload Page\" />" );
 		}
    }
 	return rc;
