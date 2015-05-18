@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<LGRP version="1.0" xmlns="http://www.dmg.org/PMML-3-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema_instance">
+  <Header xmlns="" copyright="LG Electronics">
+    The LGRP for HIT.
+    <Application name="lgrp" version="0.9 beta"/>
+  </Header>
+
+  <parameterTable>
+    <parameter name="Application" value="CHitApplication" />
+    <parameter name="BIRTH_SETTING_PATH" value="/usr/BIRTH.dat" />
+    <parameter name="NOINPUT_EVENT_DURATION" value="600" />
+    <parameter name="SPEED_AGITATOR_NORMAL" value="1000" />
+    <parameter name="SPEED_AGITATOR_TURBO" value="1200" />
+    <parameter name="SPEED_SUCTION_NORMAL" value="8500" />
+    <parameter name="SPEED_SUCTION_TURBO" value="10000" />
+    <parameter name="JOYDRIVE_VSPEED" value="330" />
+    <parameter name="JOYDRIVE_WSPEED" value="75" />
+    <parameter name="DURATION_KEEPALIVE_SECOND" value="5" />
+    <parameter name="EMERGENCY_DELAY_SECOND" value="2" />
+    <parameter name="HOMING_X_MM_0" value="750" />
+    <parameter name="HOMING_Y_MM_0" value="50" />
+    <parameter name="HOMING_ANGLE_DEG_0" value="180" />
+    <parameter name="HOMING_X_MM_1" value="-400" />
+    <parameter name="HOMING_Y_MM_1" value="0" />
+    <parameter name="HOMING_ANGLE_DEG_1" value="0" />
+    <parameter name="ORIGIN_X_MM" value="550" />
+    <parameter name="ORIGIN_Y_MM" value="50" />
+    <parameter name="ORIGIN_ANGLE_DEG" value="0" />
+    <parameter name="RECOVERY_ROTATION_ANGLE" value="360" />
+    <parameter name="RECOVERY_ROTATION_VELOCITY" value="30" />
+    <parameter name="RECOVERY_ROTATION_TIMEOUT" value="12000" />
+    <parameter name="SLAM_CAPTURE_DIST" value="90000" />
+    <parameter name="PATH_MAP_REUSE" value="/usr/data/MapReuseNavi" />
+    <parameter name="PATH_VMAP_REUSE" value="/usr/data/slam/" />
+    <parameter name="ALARM_INFO_PATH" value="/usr/rcfg/alarm.dat" />
+    <parameter name="VR_WAIT_EXCEPTION" value="BOTH" />
+    <parameter name="VR_IGNORE_MARGIN_US" value="3000000" />
+    <parameter name="DIAGNOSIS_INFO_PATH" value="/usr/data/diagnosis.dat" />
+  </parameterTable>
+
+</LGRP>
