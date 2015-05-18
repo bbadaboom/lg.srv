@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<LGRP version="1.0" xmlns="http://www.dmg.org/PMML-3-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema_instance">
+  <Header xmlns="" copyright="LG Electronics">
+    The LGRP for HIT.
+    <Application name="lgrp" version="0.9 beta"/>
+  </Header>
+
+  <parameterTable>
+    <parameter name="FEM_MIN_MATCHING_SCORE" value="50" />
+    <parameter name="DFM_BASELINE_THRESH" value="200.0" />
+    <parameter name="MAX_CEILING_DEPTH" value="10000.0" />
+    <parameter name="MIN_CEILING_DEPTH" value="100.0" />
+    <parameter name="LOW_CEILING_THRESH" value="5000.0" />
+    <parameter name="BUMPER_MIN_FEATURE_NUM" value="10" />
+    <parameter name="BUMPER_STATIC_FEATURE_PIXEL_THRESH" value="2.0" />
+    <parameter name="BUMPER_STATIC_FEATURE_RATIO" value="0.6" />
+    <parameter name="LOCALIZATION_SCENE_NUM" value="3" />
+    <parameter name="LOCALIZATION_SIGMA_LEVEL" value="3.0" />
+    <parameter name="SIMULATION_MODE" value="0" />
+  </parameterTable>
+
+</LGRP>
