@@ -4,6 +4,7 @@ var xmlinfopath='../xml/';
 var xmlfilename;
 var xmlorg;
 var xmlinfo;
+var loaddefaults = false;
 
 function loadxmlfile (xmlfilename) {
    return $.ajax({
@@ -15,8 +16,14 @@ function loadxmlfile (xmlfilename) {
          loadxmlinfo (xmlfilename);
       },
       error: function (xhr, ajaxOptions, thrownError) {
-        alert('xml file not found on ' + nickname + '\ntried to access file:' + xmlpath + xmlfilename +'\nthe error was: ' + thrownError);
-        reset();  
+        //alert(ajaxOptions);
+        //alert('xml file not found on ' + nickname + '\ntried to access file:' + xmlpath + xmlfilename +'\nthe error was: ' + thrownError);
+        if(confirm('Faild to load xml file from ' + nickname + '. Load Defaults?')) {
+          loaddefaults = true;
+          loadxmlinfo (xmlfilename);
+        } else {
+          reset();          
+        }
       }             
    });
 }
@@ -26,7 +33,12 @@ function loadxmlinfo (xmlfilename) {
       type: "GET",
       url: xmlinfopath+xmlfilename+'.info',
       dataType: "xml",
-      success: function (xml2) {   
+      success: function (xml2) { 
+         if (loaddefaults)  {
+           xmlorg = xml2; 
+           loaddefaults = false;
+           alert('Successfully restored default values!');                   
+         }
          xmlinfo = xml2;
          parsexml();
       },

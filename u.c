@@ -57,9 +57,13 @@
  * 30.04.2015   2.28   fx2 accept additional user in smtp : 'from[,user]'
  * 04.05.2015   2.29   aum runtime fixes maps.html 
  * 13.05.2015   2.30   fx2/aum multiple mail receiver some fixes in map page
+ * 15.05.2015   2.30a  aum edit xml values in webbrowser, system reboot
+ * 17.05.2015   2.30b  aum error messeges for file loading refined
+ * 17.05.2015   2.30c  aum added App.xml to editor
+ * 18.05.2015   2.30d  aum added SLAM_control.xml to editor, on failed load restore defaults
 */
 
-char *cstr = "lg.srv, V2.30 compiled 13.05.2015, by fx2";
+char *cstr = "lg.srv, V2.30d compiled 18.05.2015, by audimax";
 
 int	debug = 0;		// increasing debug output (0 to 9)
 

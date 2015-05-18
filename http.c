@@ -452,6 +452,7 @@ static	void	SendUploaded( SkLine *l )
 			!strncmp(p,"Motion.xml",10) ||
 			!strncmp(p,"Navi.xml",8) ||
 			!strncmp(p,"App.xml",7) ||
+			!strncmp(p,"SLAM_control.xml",16) ||
 			!strncmp(p,"status.txt",10) ||
 			!strncmp(p,"mail.cfg",8))
 	{
@@ -641,6 +642,22 @@ static	int	DoActivate( SkLine *l, char *param )
 		else
 		{
 			unlink("/usr/rcfg/App.svd");
+		}
+	}
+	else if ( strstr(param,"SLAM_control.xml") )
+	{
+		reboot++;
+		char	*to="/usr/rcfg/SLAM_control.xml";
+		rename(to,"/usr/rcfg/SLAM_control.svd");
+		if ( movefile( from, to ) )
+		{
+			failed++;
+			rename("/usr/rcfg/SLAM_control.svd",to);
+			unlink(from);
+		}
+		else
+		{
+			unlink("/usr/rcfg/SLAM_control.svd");
 		}
 	}
 
