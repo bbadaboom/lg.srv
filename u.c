@@ -61,9 +61,10 @@
  * 17.05.2015   2.30b  aum error messeges for file loading refined
  * 17.05.2015   2.30c  aum added App.xml to editor
  * 18.05.2015   2.30d  aum added SLAM_control.xml to editor, on failed load restore defaults
+ * 19.05.2015   2.30e  aum fixed bug in http.c introduced in 2.30a
 */
 
-char *cstr = "lg.srv, V2.30d compiled 18.05.2015, by audimax";
+char *cstr = "lg.srv, V2.30e compiled 19.05.2015, by audimax";
 
 int	debug = 0;		// increasing debug output (0 to 9)
 

@@ -1657,7 +1657,7 @@ static		int		cur_mode=-1;
 		unsigned int	b;
 		int				f=0;
 
-		for( p=data+24, q=locdata; *p; f++, p++, q++ )
+		for( p=data+25, q=locdata; *p; f++, p++, q++ )
 		{
 			if ( f == 510 )
 				break;
