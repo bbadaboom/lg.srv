@@ -899,6 +899,8 @@ static	char	retbuf[512];
 		sprintf(retbuf,"%.2f",cpu_nice);
 	else if ( (sz == 7) && !strncmp(code,"CPU:SYS",sz) )
 		sprintf(retbuf,"%.2f",cpu_sys);
+	else if ( (sz == 9) && !strncmp(code,"CPU:USAGE",sz) )
+		sprintf(retbuf,"%.2f",100-cpu_idle);
 	else if ( (sz == 13) && !strncmp(code,"LGSRV:VERSION",sz) )
 		sprintf(retbuf,"%s",cstr);
 	else if ( (sz == 12) && !strncmp(code,"LGSRV:SUMCMD",sz) )

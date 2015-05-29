@@ -63,9 +63,10 @@
  * 18.05.2015   2.30d  aum added SLAM_control.xml to editor, on failed load restore defaults
  * 19.05.2015   2.30e  aum fixed bug in http.c introduced in 2.30a
  * 28.05.2015   2.31   aum bumping version, compressed www.c
+ * 29.05.2015   2.32   fx2 new VAR  CPU:USAGE  for web-pages  (=100-IDLE)
 */
 
-char *cstr = "lg.srv, V2.31 compiled 28.05.2015, by audimax";
+char *cstr = "lg.srv, V2.32 compiled 29.05.2015, by audimax";
 
 int	debug = 0;		// increasing debug output (0 to 9)
 
