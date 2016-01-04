@@ -1039,7 +1039,7 @@ static	int	HtmlReplace( char *in, int sz )
 	return new_sz;
 }
 
-static	void	SendFile( SkLine *l, char *fname )
+static	void	SendFile( SkLine *l, char *fname, char *param )
 {
 	char		*p;
 	struct stat	st;
@@ -1049,17 +1049,24 @@ static	void	SendFile( SkLine *l, char *fname )
 	FILE		*fp=0;
 	int			fd=-1;
 	int			is_html=0;
+	int			is_cgi=0;
 
 	memset(buff,0,5008);
-
+	
+	// Terminate string at space
 	p=strchr(fname,' ');
 	if ( !p )
 	{
-		WriteSimpleHttp( l, hdr "<body>unknown REQUEST!<br />" );
-		WriteSimpleHttp( l, "SendFile(%s)",fname );
-		WriteSimpleHttp( l, "</body></html>");
-		skCloseAtEmpty(l);
-		return;
+		// If there is no space, terminate at '?'
+		p=strchr(fname,'?');
+		if ( !p )
+		{
+			WriteSimpleHttp( l, hdr "<body>unknown REQUEST!<br />" );
+			WriteSimpleHttp( l, "SendFile(%s)",fname );
+			WriteSimpleHttp( l, "</body></html>");
+			skCloseAtEmpty(l);
+			return;
+		}
 	}
 	*p=0;
 	num_open++;
@@ -1096,7 +1103,7 @@ static	void	SendFile( SkLine *l, char *fname )
 			}
 		}
 #endif
-/* first try to find file on /usr/data/htdocs */
+		// first try to find file on /usr/data/htdocs
 		sprintf(buff,"/usr/data/htdocs/%s",fname);
 		fp=fopen(buff,"r");
 		if ( fp )
@@ -1125,114 +1132,156 @@ static	void	SendFile( SkLine *l, char *fname )
 			}
 #endif
 		}
+		// Then try to find file on /usr/data/cgi-bin
 		else
 		{
-			intern_file=1;
-			fd=__t_open( fname );
-			if ( fd == -1 )
+			sprintf(buff,"/usr/data/cgi-bin/%s",fname);
+			fp=fopen(buff,"r");
+			if ( fp )
 			{
-				WriteSimpleHttp( l, hdr "<body>file not found : 401<br />" );
-				WriteSimpleHttp( l, "</body></html>");
-				skCloseAtEmpty(l);
-				num_open--;
-				return;
+				is_cgi=1;
+				fclose(fp);
 			}
-#ifdef HTML_WITH_SIZE
-			if ( !is_html )
-#endif
-				st.st_size = __t_getsize(fd);
-#ifdef HTML_WITH_SIZE
+			// No htdocs, no cgi-bin --> internal file!
 			else
 			{
-				int		xb;
-				st.st_size = 0;
-				xb=__t_read(fd,buff,5000);
-				while( xb>0 )
-				{
-					x=HtmlReplace(buff,xb);
-					st.st_size += x;
-					if ( xb < 5000 )
-						break;
-					xb=__t_read(fd,buff,5000);
-				}
-				__t_close(fd);
+				intern_file=1;
 				fd=__t_open( fname );
-			}
+				if ( fd == -1 )
+				{
+					WriteSimpleHttp( l, hdr "<body>file not found : 401<br />" );
+					WriteSimpleHttp( l, "</body></html>");
+					skCloseAtEmpty(l);
+					num_open--;
+					return;
+				}
+#ifdef HTML_WITH_SIZE
+				if ( !is_html )
 #endif
+					st.st_size = __t_getsize(fd);
+#ifdef HTML_WITH_SIZE
+				else
+				{
+					int		xb;
+					st.st_size = 0;
+					xb=__t_read(fd,buff,5000);
+					while( xb>0 )
+					{
+						x=HtmlReplace(buff,xb);
+						st.st_size += x;
+						if ( xb < 5000 )
+							break;
+						xb=__t_read(fd,buff,5000);
+					}
+					__t_close(fd);
+					fd=__t_open( fname );
+				}
+#endif
+			}
 		}
 	}
 	p=strrchr(fname,'.');
-	if ( !p )
+	
+	// Only write headers for non-cgi-bin files
+	if ( !is_cgi )
 	{
-		WriteSimpleHttp( l, hdr_binary, st.st_size );
-	}
-	else
-	{
-		if ( !strcmp(p,".js") )	// js
+		if ( !p )
 		{
-			Log(8,"> JS : size= %ld\r\n",(unsigned long)st.st_size);
-			WriteSimpleHttp(l,hdr_js,st.st_size);
-		}
-		else if ( !strcmp(p,".png") )	// PNG
-		{
-			Log(8,"> PNG : size= %ld\r\n",(unsigned long)st.st_size);
-			WriteSimpleHttp(l,hdr_png,st.st_size);
-		}
-		else if ( !strcmp(p,".gif") )	// GIF
-		{
-			Log(8,"> GIF : size= %ld\r\n",(unsigned long)st.st_size);
-			WriteSimpleHttp(l,hdr_gif,st.st_size);
-		}
-		else if ( !strcmp(p,".html") )	// HTML
-		{
-#ifdef HTML_WITH_SIZE
-			Log(8,"> HTML : size= %ld\r\n",(unsigned long)st.st_size);
-			WriteSimpleHttp(l,hdr_html,st.st_size);
-#else
-			PrepareVars();
-			WriteSimpleHttp(l,hdr_html_nsize);
-#endif
-			is_html=1;
-		}
-		else if ( !strcmp(p,".htm") )	// HTML
-		{
-#ifdef HTML_WITH_SIZE
-			Log(8,"> HTML : size= %ld\r\n",(unsigned long)st.st_size);
-			WriteSimpleHttp(l,hdr_html,st.st_size);
-#else
-			PrepareVars();
-			WriteSimpleHttp(l,hdr_html_nsize);
-#endif
-			is_html=1;
-		}
-		else if ( !strcmp(p,".jpg") )	// JPEG
-		{
-			Log(8,"> JPEG : size= %ld\r\n",(unsigned long)st.st_size);
-			WriteSimpleHttp(l,hdr_jpeg,st.st_size);
-		}
-		else if ( !strcmp(p,".jpeg") )	// JPEG
-		{
-			Log(8,"> JPEG : size= %ld\r\n",(unsigned long)st.st_size);
-			WriteSimpleHttp(l,hdr_jpeg,st.st_size);
-		}
-		else if ( !strcmp(p,".txt") )	// TXT
-		{
-			Log(8,"> TXT : size= %ld\r\n",(unsigned long)st.st_size);
-			WriteSimpleHttp(l,hdr_txt,st.st_size);
-		}
-		else if ( !strcmp(p,".css") )	// css
-		{
-			Log(8,"> CSS : size= %ld\r\n",(unsigned long)st.st_size);
-			WriteSimpleHttp(l,hdr_css,st.st_size);
+			WriteSimpleHttp( l, hdr_binary, st.st_size );
 		}
 		else
 		{
-			Log(8,"> %p, RAW : size= %ld\r\n",l,(unsigned long)st.st_size);
-			WriteSimpleHttp( l, hdr_binary, st.st_size );
+			if ( !strcmp(p,".js") )	// js
+			{
+				Log(8,"> JS : size= %ld\r\n",(unsigned long)st.st_size);
+				WriteSimpleHttp(l,hdr_js,st.st_size);
+			}
+			else if ( !strcmp(p,".png") )	// PNG
+			{
+				Log(8,"> PNG : size= %ld\r\n",(unsigned long)st.st_size);
+				WriteSimpleHttp(l,hdr_png,st.st_size);
+			}
+			else if ( !strcmp(p,".gif") )	// GIF
+			{
+				Log(8,"> GIF : size= %ld\r\n",(unsigned long)st.st_size);
+				WriteSimpleHttp(l,hdr_gif,st.st_size);
+			}
+			else if ( !strcmp(p,".html") )	// HTML
+			{
+	#ifdef HTML_WITH_SIZE
+				Log(8,"> HTML : size= %ld\r\n",(unsigned long)st.st_size);
+				WriteSimpleHttp(l,hdr_html,st.st_size);
+	#else
+				PrepareVars();
+				WriteSimpleHttp(l,hdr_html_nsize);
+	#endif
+				is_html=1;
+			}
+			else if ( !strcmp(p,".htm") )	// HTML
+			{
+	#ifdef HTML_WITH_SIZE
+				Log(8,"> HTML : size= %ld\r\n",(unsigned long)st.st_size);
+				WriteSimpleHttp(l,hdr_html,st.st_size);
+	#else
+				PrepareVars();
+				WriteSimpleHttp(l,hdr_html_nsize);
+	#endif
+				is_html=1;
+			}
+			else if ( !strcmp(p,".jpg") )	// JPEG
+			{
+				Log(8,"> JPEG : size= %ld\r\n",(unsigned long)st.st_size);
+				WriteSimpleHttp(l,hdr_jpeg,st.st_size);
+			}
+			else if ( !strcmp(p,".jpeg") )	// JPEG
+			{
+				Log(8,"> JPEG : size= %ld\r\n",(unsigned long)st.st_size);
+				WriteSimpleHttp(l,hdr_jpeg,st.st_size);
+			}
+			else if ( !strcmp(p,".txt") )	// TXT
+			{
+				Log(8,"> TXT : size= %ld\r\n",(unsigned long)st.st_size);
+				WriteSimpleHttp(l,hdr_txt,st.st_size);
+			}
+			else if ( !strcmp(p,".css") )	// css
+			{
+				Log(8,"> CSS : size= %ld\r\n",(unsigned long)st.st_size);
+				WriteSimpleHttp(l,hdr_css,st.st_size);
+			}
+			else
+			{
+				Log(8,"> %p, RAW : size= %ld\r\n",l,(unsigned long)st.st_size);
+				WriteSimpleHttp( l, hdr_binary, st.st_size );
+			}
 		}
 	}
 	skMultiDisable(l,0);
-	if ( !intern_file )
+	
+	// Execute cgi-bin files
+	if ( is_cgi )
+	{
+		sprintf(buff,"/usr/data/cgi-bin/%s \"%s\"",fname, param);
+		fp=popen(buff,"r");
+		int		xb;
+		int		xsum=0;
+		xb=fread(buff,1,5000,fp);
+		while( xb>0 )
+		{
+			x=xb;
+			_WritePacket(l,(unsigned char*)buff,x);
+			xsum+=x;
+			if ( l->out && ( l->out->fill - l->out->ptr > 100000 ))
+				_SyncLine(l);
+			if ( xb < 5000 )
+				break;
+			xb=fread(buff,1,5000,fp);
+		}
+		pclose(fp);
+		skCloseAtEmpty(l);
+		Log(8,"%p cgi: %d bytes written\r\n",l,xsum);
+	}
+	
+	else if ( !intern_file )
 	{
 		int		xb;
 		int		xsum=0;
@@ -1413,7 +1462,7 @@ static	void	DoPostData( SkLine *l, char *data, int len )
 			else
 			{
 				strcpy(xfname,"upfail.html ");
-				SendFile( l, xfname );
+				SendFile( l, xfname, "" );
 			}
 			skCloseAtEmpty(l);
 			return;
@@ -1679,7 +1728,7 @@ static		int		cur_mode=-1;
 		}
 		*q=0;
 		RunTimerParam(locdata);
-		SendFile(l,def);
+		SendFile(l,def,"");
 		skCloseAtEmpty(l);
 		return;
 	}
@@ -1712,14 +1761,14 @@ static		int		cur_mode=-1;
 		}
 		*q=0;
 		RunMailCfgParam(locdata);
-		SendFile(l,def);
+		SendFile(l,def,"");
 		skCloseAtEmpty(l);
 		return;
 	}
 	else if ( !strncmp(data,"GET / HTTP",10) )
 	{
 		char	def[16]="index.html ";
-		SendFile(l,def);
+		SendFile(l,def,"");
 #ifdef HTML_WITH_SIZE
 		_SyncLine(l);
 		Log(8,"*** done (%s)\r\n",def);
@@ -1759,17 +1808,45 @@ static		int		cur_mode=-1;
 		skCloseAtEmpty(l);
 		return;
 	}
+	// No special handling, just call the file
 	else if ( !strncmp(data,"GET /",5) )
 	{
-		char	*fname=malloc(pck->len);
-		char	*p;
-
+		char			*fname=malloc(pck->len);
+		char			*p;
+		
 		memcpy(fname,data+5,pck->len-5);
 		*(fname+pck->len-5)=0;
 		p=strchr(fname,'?');
 		if(p)
 			*p=' ';
-		SendFile(l,fname);
+		
+		// Parameters exist
+		if ( strchr(data,'?') )
+		{
+			// Extract parameters
+			char	param[512];
+			char	*q;
+			int		f=0;
+
+			for( p=strchr(data,'?')+1, q=param; *p; f++, p++, q++ )
+			{
+				if ( f == 510 )
+					break;
+				if ( *p == ' ' )
+					break;
+
+				*q=*p;
+			}
+			*q=0;
+			// Call SendFile passing potential parameters
+			SendFile(l,fname,param);
+		}
+		else
+		{
+			// Call SendFile without parameters
+			SendFile(l,fname,"");
+		}
+		
 #ifdef HTML_WITH_SIZE
 		_SyncLine(l);
 		Log(8,"*** done (%s)\r\n",fname);
