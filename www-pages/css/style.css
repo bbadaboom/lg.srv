@@ -392,3 +392,9 @@ input[type="text"] {
 	-moz-border-radius: 2px;
 	border-radius: 2px;
 }
+
+#cam {
+	float:	right;
+	background-color: #D1D2D4;
+	margin-bottom: 10px;
+}

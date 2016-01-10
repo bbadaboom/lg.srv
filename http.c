@@ -136,6 +136,16 @@ Keep-Alive: timeout=2, max=2000\r\n\
 Content-Type: application/octet-stream\r\n\
 \r\n"
 
+#define hdr_pedro "HTTP/1.1 200 OK\r\n\
+Server: luigi internal V1.0 (Linux)\r\n\
+Connection: Keep-Alive\r\n\
+Access-Control-Allow-Origin: *\r\n\
+Keep-Alive: timeout=2, max=2000\r\n\
+Content-Type: application/octet-stream\r\n\
+\r\n"
+
+
+
 static	void	WriteSimpleHttp(SkLine *l, char *fmt, ...)
 {
 	va_list	args;
@@ -1763,6 +1773,44 @@ static		int		cur_mode=-1;
 		RunMailCfgParam(locdata);
 		SendFile(l,def,"");
 		skCloseAtEmpty(l);
+		return;
+	}
+	// Show pedropatch image
+	else if ( !strncmp(data,"GET /images/snapshot.yuv",24) )
+	{
+		char		buff[5008];
+		int			x=0;
+		FILE		*fp=0;
+		
+		// Write header
+		WriteSimpleHttp( l, hdr_pedro );
+		
+		skMultiDisable(l,0);
+	
+		// Execute command
+		sprintf(buff,"dd if=/dev/camclone bs=153600 count=1 2>/dev/null");
+		fp=popen(buff,"r");
+		int		xb;
+		int		xsum=0;
+		xb=fread(buff,1,5000,fp);
+		while( xb>0 )
+		{
+			x=xb;
+			_WritePacket(l,(unsigned char*)buff,x);
+			xsum+=x;
+			if ( l->out && ( l->out->fill - l->out->ptr > 100000 ))
+				_SyncLine(l);
+			if ( xb < 5000 )
+				break;
+			xb=fread(buff,1,5000,fp);
+		}
+		pclose(fp);
+		skCloseAtEmpty(l);
+		Log(8,"%p pedro yuv image: %d bytes written\r\n",l,xsum);
+		
+		_SyncLine(l);
+		skMultiEnable(l,0);
+	
 		return;
 	}
 	else if ( !strncmp(data,"GET / HTTP",10) )

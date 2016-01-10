@@ -5,13 +5,13 @@ $(document).ready(function() {
 	if( $('#loadhere').length > 0 )
 	{
 		loadContent();
-		reload = setInterval( "loadContent()", 1000 );
+		//reload = setInterval( "loadContent()", 1500 );
 	}
 		
 	if( $('#datetime').length > 0 )
 	{
 		loadDateTime();
-		datetime = setInterval( "loadDateTime()", 1000 );
+		//datetime = setInterval( "loadDateTime()", 1500 );
 	}
 	
 	$('#mode').click(function() {
@@ -124,9 +124,13 @@ $(function() {
 });
 
 function loadDateTime() {
-	$('#datetime').load( "/sites/date.html" );
+	$('#datetime').load( "/sites/date.html", function() {
+		window.setTimeout('loadDateTime()', 1000);
+	});
 }
 
 function loadContent() {
-	$('#loadhere').load( "/sites/home.html" );
+	$('#loadhere').load( "/sites/home.html", function() {
+		window.setTimeout('loadContent()', 1000);
+	});
 }

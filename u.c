@@ -65,10 +65,11 @@
  * 28.05.2015   2.31   aum bumping version, compressed www.c
  * 29.05.2015   2.32   fx2 new VAR  CPU:USAGE  for web-pages  (=100-IDLE)
  * 01.01.2016	2.33   aum fixed 2015 bug in maps.html
- * 04.01.2016   2.34   bbb (BigBadaBoom) adds cgi-bin functionality and cleandata.html
+ * 04.01.2016   2.33d  bbb (BigBadaBoom) adds cgi-bin functionality and cleandata.html
+ * 10.01.2016   2.34   bbb adds pedro patch support, updates javascripts to prevent overload of lg.srv
 */
 
-char *cstr = "lg.srv, V2.34 compiled 04.01.2016, by BigBadaBoom";
+char *cstr = "lg.srv, V2.34 compiled 10.01.2016, by BigBadaBoom";
 
 int	debug = 0;		// increasing debug output (0 to 9)
 

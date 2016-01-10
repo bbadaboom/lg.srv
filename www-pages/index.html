@@ -7,8 +7,9 @@
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
 		<script type="text/javascript" src="javascript/jquery-2.1.1.min.js"></script>
 		<script type="text/javascript" src="javascript/functions.js"></script>
+		<script type="text/javascript" src="javascript/snapshot.js"></script>
 	</head>
-	<body>
+	<body onload="drawSnapshot()">
 		<div id="container">
 			<div id="header">
 				<div id="title">
@@ -34,7 +35,10 @@
 				<h2>Status</h2>
 				<div id="loadhere"></div>
 				<br /><br />
+
 				<h2>Control</h2>
+				<div id="cam"><canvas id="cam_canvas" width="320" height="240" /></div>
+
 				<table cellpadding="0" cellspacing="0" class="control" border="0">
 					<tr>
 						<td><input type="button" id="start" value="START CLEANING" /></td>
