@@ -8,21 +8,21 @@
 		<link rel="stylesheet" href="../javascript/css/jquery-ui.css" />
 		<link rel="stylesheet" type="text/css" href="../css/xmledit.css" />
 		<script type="text/javascript" src="../javascript/jquery-2.1.1.min.js"></script>
-		<script type="text/javascript" src="../javascript/jquery-ui-1.10.4.min.js"></script>
+		<script type="text/javascript" src="../javascript/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="../javascript/functions.js"></script>
 		<script type="text/javascript" src="../javascript/xmledit.js"></script>
 		<script type="text/javascript">
 		  var blkfile = '${BLKFILE:0}';
 		  var debug=false;
-		   
+
         //Check if we are running on bot or not
         if(blkfile.length <= 15 ) debug = true;
         if(debug) {
            xmlpath='';
-           xmlinfopath='';               
+           xmlinfopath='';
         }
-        
-		  var nickname = '${JSON:NICKNAME}';		
+
+		  var nickname = '${JSON:NICKNAME}';
 		</script>
 	</head>
 	<body>
@@ -47,22 +47,22 @@
 					</ul>
 				</div>
 			</div>
-			<div id="content" style="visibility:hidden">	
+			<div id="content" style="visibility:hidden">
 				<h2>Edit XML Files</h2>
 				<div id="response"></div>
 				<div id="editmenu">
 				<img style="float:right;" id="loader" src="../images/loader.gif" height="16" width="16" alt="loading" />
 				<div id="fileselector">Choose file to edit: <br /><input type="button" class="xmlfile" name="xmlfile" value="App.xml" /><input type="button" class="xmlfile" name="xmlfile" value="Motion.xml" /> <input type="button" class="xmlfile" name="xmlfile" value="Navi.xml" /><input type="button" class="xmlfile" name="xmlfile" value="SLAM_control.xml" /> </div>
             <div id="menubuttons"><input type="button" id="savexml" value="Save file" /><input type="button" id="resetvalues" value="Reset Values" /><input type="button" id="defaultvalues" value="Default Values" /></div></div>
-				
-						
-								
-				<div id="editor">							
+
+
+
+				<div id="editor">
 				<table id="xmlparams">
-				  
-				</table>	
+
+				</table>
 				</div>
-	
+
 			</div>
 			<div class="clear"></div>
 		</div>
